@@ -1,0 +1,11 @@
+# Bytecode
+*.pyc
+
+# Virtual environment
+venv/*
+
+# Temporary stuff
+tmp/*
+
+# Configs
+config.py

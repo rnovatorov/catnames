@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block scripts %}
+    {# <script type="text/javascript" src="static/js/connected_users.js"></script> #}
+{% endblock %}
+{% block content %}
+    <h1>Lobby page</h1>
+    {% if users_online %}
+        <h3>Users online:</h3>
+        <ol id="users_online">
+        {% for u in users_online: %}
+            <li id="{{ u.user_id }}">
+                <img class="avatar" src="{{ u.avatar }}"/>
+                <span class="full_name">{{ u.full_name }}</span>
+            </li>
+        {% endfor %}
+        </ol>
+    {% endif %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var url = "http://" + document.domain + ":" + location.port;
+            var socket = io.connect(url + "/lobby");
+
+            socket.on("connected_users", function(u) {
+                console.log(u);
+                if (u["online"] == true) {
+                    var elem = $("#" + u.user_id);
+                    if ( elem[0] ) {
+                        elem.show();
+                    } else {
+                        $("#users_online").append(
+                            "<li id='" + u.user_id + "'>" +
+                            "<img class='avatar' src='" + u.avatar + "'/>" +
+                            "<span class='full_name'>" + u.full_name + "</span>" +
+                            "</li>"
+                        );
+                    }
+                } else if (u["online"] == false) {
+                    var elem = $("#" + u.user_id);
+                    elem.hide();
+                }
+            });
+        });
+    </script>
+{% endblock %}
