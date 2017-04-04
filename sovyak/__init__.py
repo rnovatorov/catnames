@@ -4,7 +4,6 @@ from flask_socketio import SocketIO
 from flask_pymongo import PyMongo
 from flask_login import LoginManager
 from config import *
-from sovyak import VKOAuther
 
 
 # Instantiating Flask
@@ -34,7 +33,8 @@ lm.init_app(app)
 lm.login_view = "login"
 
 # For VK
+from sovyak import VKOAuther
 vk_oauther = VKOAuther.VKOAuther(VK_APP_ID, VK_APP_SECRET)
 
-# Importing views
+# Importing views, models
 from sovyak import views, models

@@ -1,4 +1,5 @@
 import requests
+from sovyak import app
 
 
 class VKOAuther(object):
@@ -44,4 +45,5 @@ class VKOAuther(object):
             response = requests.get(token_url)
             return response.json()
         except Exception as e:
+            app.logger.error(e)
             return None

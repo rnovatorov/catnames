@@ -4,17 +4,17 @@
 {% endblock %}
 {% block content %}
     <h1>Lobby page</h1>
-    {% if users_online %}
-        <h3>Users online:</h3>
-        <ol id="users_online">
-        {% for u in users_online: %}
-            <li id="{{ u.user_id }}">
-                <img class="avatar" src="{{ u.avatar }}"/>
+    <h3>Users online:</h3>
+    <ol id="users_online">
+    {% for u in users_online: %}
+        <li id="{{ u.user_id }}">
+            <img class="avatar" src="{{ u.avatar }}"/>
+            <a href="{{ u.vk_user_page }}">
                 <span class="full_name">{{ u.full_name }}</span>
-            </li>
-        {% endfor %}
-        </ol>
-    {% endif %}
+            </a>
+        </li>
+    {% endfor %}
+    </ol>
     <script type="text/javascript">
         $(document).ready(function() {
             var url = "http://" + document.domain + ":" + location.port;
@@ -29,8 +29,10 @@
                     } else {
                         $("#users_online").append(
                             "<li id='" + u.user_id + "'>" +
-                            "<img class='avatar' src='" + u.avatar + "'/>" +
-                            "<span class='full_name'>" + u.full_name + "</span>" +
+                                "<img class='avatar' src='" + u.avatar + "'/> " +
+                                "<a href='" + u.vk_user_page + "'>" +
+                                    "<span class='full_name'>" + u.full_name + "</span>" +
+                                "</a>" +
                             "</li>"
                         );
                     }
