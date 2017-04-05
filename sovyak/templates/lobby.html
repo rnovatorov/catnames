@@ -1,46 +1,32 @@
 {% extends "base.html" %}
-{% block scripts %}
-    {# <script type="text/javascript" src="static/js/connected_users.js"></script> #}
-{% endblock %}
-{% block content %}
-    <h1>Lobby page</h1>
-    <h3>Users online:</h3>
-    <ol id="users_online">
-    {% for u in users_online: %}
-        <li id="{{ u.user_id }}">
-            <img class="avatar" src="{{ u.avatar }}"/>
-            <a href="{{ u.vk_user_page }}">
-                <span class="full_name">{{ u.full_name }}</span>
-            </a>
-        </li>
-    {% endfor %}
-    </ol>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            var url = "http://" + document.domain + ":" + location.port;
-            var socket = io.connect(url + "/lobby");
 
-            socket.on("connected_users", function(u) {
-                console.log(u);
-                if (u["online"] == true) {
-                    var elem = $("#" + u.user_id);
-                    if ( elem[0] ) {
-                        elem.show();
-                    } else {
-                        $("#users_online").append(
-                            "<li id='" + u.user_id + "'>" +
-                                "<img class='avatar' src='" + u.avatar + "'/> " +
-                                "<a href='" + u.vk_user_page + "'>" +
-                                    "<span class='full_name'>" + u.full_name + "</span>" +
-                                "</a>" +
-                            "</li>"
-                        );
-                    }
-                } else if (u["online"] == false) {
-                    var elem = $("#" + u.user_id);
-                    elem.hide();
-                }
-            });
-        });
-    </script>
+{% block scripts %}
+    <script type="text/javascript" src="static/js/connected_users.js"></script>
+{% endblock %}
+
+{% block content %}
+    <h1 align="center">Lobby</h1>
+
+    <div class="rooms_available">
+        <h3>Rooms available:</h3>
+        <ol>
+            <li>Foo</li>
+            <li>Bar</li>
+        </ol>
+        <button id="create_new_room">Create new room</button>
+    </div>
+
+    <div class="users_online">
+        <h3>Users online:</h3>
+        <ol id="users_online_list">
+        {% for u in users_online: %}
+            <li id="{{ u.user_id }}">
+                <img class="avatar" src="{{ u.avatar }}"/>
+                <a href="{{ u.vk_user_page }}">
+                    <span class="full_name">{{ u.full_name }}</span>
+                </a>
+            </li>
+        {% endfor %}
+        </ol>
+    </div>
 {% endblock %}
