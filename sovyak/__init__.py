@@ -31,6 +31,7 @@ mongo = PyMongo(app)
 lm = LoginManager()
 lm.init_app(app)
 lm.login_view = "login"
+lm.login_message_category = "info"
 
 # For VK
 from sovyak import VKOAuther

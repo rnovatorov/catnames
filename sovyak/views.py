@@ -2,7 +2,8 @@ from flask import render_template, flash, redirect, url_for, request, g
 from flask_socketio import emit, send
 from flask_login import login_user, logout_user, current_user, login_required
 from sovyak import app, socketio, mongo, lm, vk_oauther
-from .models import User
+from .models import User, Room
+from .forms import CreateRoomForm, EnterRoomForm
 
 
 @app.before_request
@@ -13,9 +14,7 @@ def before_request():
 @app.route("/")
 @app.route("/index")
 def index():
-    return render_template("index.html",
-        title="Home"
-    )
+    return render_template("index.html")
 
 
 @app.route("/vk_oauth")
@@ -32,17 +31,17 @@ def vk_oauth_callback():
 
     code = request.args.get("code")
     if code is None:
-        flash("Authentication failed (code is None)")
+        flash("Authentication failed (code is None).", "danger")
         return redirect(url_for("login"))
     vk_access_info = vk_oauther.get_access_token(code)
     if "error_description" in vk_access_info:
-        flash("Authentication failed (%s)" % vk_access_info["error_description"])
+        flash("Authentication failed (%s)." % vk_access_info["error_description"], "danger")
         return redirect(url_for("login"))
     elif vk_access_info is None:
-        flash("Authentication failed (%s)" % "vk_access_info is None")
+        flash("Authentication failed (%s)." % "vk_access_info is None", "danger")
         return redirect(url_for("login"))
     elif not "user_id" in vk_access_info:
-        flash("Authentication failed (%s)" % "No user_id in vk_access_info")
+        flash("Authentication failed (%s)." % "No user_id in vk_access_info", "danger")
         return redirect(url_for("login"))
 
     # Logging in
@@ -52,19 +51,13 @@ def vk_oauth_callback():
         result = User.register(vk_access_info)
 
     if not result["success"]:
-        flash("Authentication failed (%s)" % result["reason"])
+        flash("Authentication failed (%s)." % result["reason"], "danger")
         return redirect(url_for("login"))
 
     u = User(vk_access_info["user_id"])
-    u.set_online()
     login_user(u)
 
-    # Emitting change of connected users
-    socketio.emit("connected_users", 
-                   u.json(),
-                   namespace="/lobby")
-
-    return redirect(url_for("lobby"))
+    return redirect(url_for("index"))
 
 
 @app.route("/login")
@@ -77,50 +70,156 @@ def login():
 @app.route("/logout")
 @login_required
 def logout():
-    current_user.set_offline()
-    # Emitting change of connected users
-    socketio.emit("connected_users",
-                   current_user.json(),
-                   namespace="/lobby")
+    room_name = current_user.in_room()
+    r = Room(room_name)
+    r.remove_member(current_user.user_id)
+    current_user.set_in_room(None)
+    flash("You left room '%s'." % room_name, "success")
+
+    if not r.members():
+        # Emitting change of available rooms
+        socketio.emit("available_rooms", r.json(), namespace="/lobby")
+        r.delete_room()
+        flash("Room '%s' has been deleted" % room_name, "info")
+
     logout_user()
 
+    flash("Goodbye!", "info")
     return redirect(url_for("index"))
 
 
 @socketio.on("connect", namespace="/lobby")
 def connect():
-    # if current_user.is_authenticated():
-    app.logger.info("User %s is online" % current_user.user_id)
-    current_user.set_online()
-    socketio.emit("connected_users", current_user.json(), namespace="/lobby")
+    app.logger.info("User %s is in lobby" % current_user.user_id)
+    current_user.set_in_lobby(True)
+    socketio.emit("users_in_lobby", current_user.json(), namespace="/lobby")
 
 
 @socketio.on("disconnect", namespace="/lobby")
 def disconnect():
-    # if current_user.is_authenticated():
-    app.logger.info("User %s is offline" % current_user.user_id)
-    current_user.set_offline()
-    socketio.emit("connected_users", current_user.json(), namespace="/lobby")
+    app.logger.info("User %s is not in lobby" % current_user.user_id)
+    current_user.set_in_lobby(False)
+    socketio.emit("users_in_lobby", current_user.json(), namespace="/lobby")
 
 
-@app.route("/lobby")
+@app.route("/lobby", methods=["GET", "POST"])
 @login_required
 def lobby():
+    # Disallowing lobby for users who already are in a room
+    if current_user.in_room() is not None:
+        flash("Lobby is not accessible while in room.", "info")
+        return redirect(url_for("room", room_name=current_user.in_room()))
+
+    # Dealing with room creation
+    form = CreateRoomForm(creator=current_user)
+    if form.validate_on_submit():
+        room_name = form.room_name.data
+        room_password = form.room_password.data
+        role = form.role.data
+
+        r = Room(room_name)
+        r.set_password(room_password)
+        r.add_member(current_user.user_id)
+        current_user.set_in_room(room_name)
+        current_user.set_role(role)
+
+        # Emitting change of available rooms
+        socketio.emit("available_rooms", r.json(), namespace="/lobby")
+
+        flash("Room '%s' has been created." % room_name, "success")
+        return redirect(url_for("room", room_name=room_name))
+
     return render_template("lobby.html",
         title="Lobby",
-        users_online=User.get_online_users()
+        form=form,
+        available_rooms=Room.get_available_rooms(),
+        users_in_lobby=User.get_users_in_lobby()
     )
 
-@app.route("/room/<int:room_number>")
+@app.route("/room/<room_name>/enter/as/<role>", methods=["GET", "POST"])
 @login_required
-def room(room_number):
-    return "Room number %d" % room_number
+def enter_room(room_name, role):
+    if not Room.room_name_exists(room_name):
+        flash("Room '%s' does not exist." % room_name, "danger") 
+        return redirect(url_for("lobby"))
+
+    # Redirecting users who already are in this room
+    if current_user.in_room() == room_name:
+        return redirect(url_for("room", room_name=room_name))
+
+    # Disallowing entering for users who already are in a room
+    if current_user.in_room() is not None:
+        flash("Lobby is not accessible while in room.", "danger")
+        return redirect(url_for("room", room_name=current_user.in_room()))
+
+    r = Room(room_name)
+
+    # Room must have only one quiz-master
+    if role == "quiz-master" and r.quiz_master():
+        flash("Room already has a Quiz-Master.", "danger")
+        return redirect(url_for("lobby"))
+
+    # Checking room password and setting roles
+    form = EnterRoomForm()
+    if not r.password() or form.validate_on_submit():
+        if r.password() and form.room_password.data != r.password():
+            flash("Incorrect password", "danger")
+            return redirect(url_for("enter_room", room_name=room_name,
+                                    role=role))
+        current_user.set_in_room(room_name)
+        current_user.set_role(role)
+        r.add_member(current_user.user_id)
+        flash("You are allowed to pass!", "success")
+        return redirect(url_for("room", room_name=room_name))
+
+    return render_template("enter_room.html",
+        title="Enter room",
+        form=form,
+        room_name=room_name,
+        role=role
+    )
 
 
-@app.route("/game")
+@app.route("/room/<room_name>")
 @login_required
-def game():
-    return "The game"
+def room(room_name):
+    if not Room.room_name_exists(room_name):
+        flash("Room '%s' does not exist." % room_name, "danger") 
+        return redirect(url_for("lobby"))
+    elif current_user.in_room() != room_name:
+        flash("You do not belong to this room")
+        return redirect(url_for("lobby"))
+
+    r = Room(room_name)
+
+    return render_template("room.html",
+        room_name=room_name,
+        members=r.members()
+    )
+
+
+@app.route("/room/leave/<room_name>")
+@login_required
+def leave_room(room_name):
+    if current_user.in_room() != room_name:
+        flash("You can not leave room you are not in.", "danger")
+        return redirect(url_for("lobby"))
+    elif not Room.room_name_exists(room_name):
+        flash("Room '%s' does not exist." % room_name, "danger") 
+        return redirect(url_for("lobby"))
+
+    r = Room(room_name)
+    r.remove_member(current_user.user_id)
+    current_user.set_in_room(None)
+    flash("You left room '%s'." % room_name, "info")
+
+    if not r.members():
+        # Emitting change of available rooms
+        socketio.emit("available_rooms", r.json(), namespace="/lobby")
+        r.delete_room()
+        flash("Room '%s' has been deleted" % room_name, "info")
+
+    return redirect(url_for("lobby"))
 
 
 @lm.user_loader
@@ -138,9 +237,4 @@ def not_found_error(error):
 
 @app.errorhandler(500)
 def internal_error(error):
-    db.session.rollback()
     return render_template("500.html"), 500
-
-
-def get_online_users_json():
-    return [u.json() for u in User.get_online_users()]

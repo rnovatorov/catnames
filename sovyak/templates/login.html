@@ -1,9 +1,14 @@
 <!-- extend base layout -->
 {% extends "base.html" %}
 
+{% block heading %}
+    Login
+{% endblock %}
+
 {% block content %}
-    <h1 align="center">Login</h1>
-    <a href="{{ url_for('vk_oauth') }}">
-        <img src="static/img/vk_button.png">
-    </a>
+    <div class="text-center">
+        <a href="{{ url_for('vk_oauth') }}" name="vk_oauth">
+            <img src="static/img/vk_button.png">
+        </a>
+    </div>
 {% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block heading %}
+    {{ room_name }}
+{% endblock %}
+
+{% block content %}
+    <div class="users_in_room col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 align="center">Users in room:</h4>
+            </div>
+            <div class="panel-body">
+                <ul id="users_in_room_list" class="list-group">
+                {% for u in members: %}
+                    {% include 'user.html' %}
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

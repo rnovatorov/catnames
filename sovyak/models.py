@@ -26,23 +26,38 @@ class User():
     def is_anonymous(self):
         return False
 
+    def in_room(self):
+        return mongo.db.users.find_one({"_id": self.user_id}).get("in_room")
+
+    def set_in_room(self, room_name):
+        return mongo.db.users.update_one({"_id": self.user_id},
+                                         {"$set": {"in_room": room_name}})
+
+    def role(self):
+        return mongo.db.users.find_one({"_id": self.user_id}).get("role")
+
+    def set_role(self, role):
+        return mongo.db.users.update_one({"_id": self.user_id},
+                                         {"$set": {"role": role}})
+
+    def set_in_lobby(self, b):
+        return mongo.db.users.update_one({"_id": self.user_id},
+                                         {"$set": {"in_lobby": b}})
+
+    def score(self):
+        return mongo.db.users.find_one({"_id": self.user_id}).get("score")
+
     def json(self):
         user_info = mongo.db.users.find_one({"_id": self.user_id})
-        return {"online": user_info["online"],
-                "user_id": self.user_id,
+        return {"user_id": self.user_id,
                 "vk_user_page": self.vk_user_page,
                 "first_name": self.first_name,
                 "last_name": self.last_name,
                 "full_name": self.full_name,
-                "avatar": self.avatar}
-
-    def set_online(self):
-        mongo.db.users.update_one({"_id": self.user_id},
-                                  {"$set": {"online": True}})
-
-    def set_offline(self):
-        mongo.db.users.update_one({"_id": self.user_id},
-                                  {"$set": {"online": False}})
+                "avatar": self.avatar,
+                "in_lobby": user_info["in_lobby"],
+                "in_room": user_info["in_room"],
+                "score": user_info["score"]}
 
     @staticmethod
     def _get_vk_user_info(user_id, access_token):
@@ -55,8 +70,8 @@ class User():
         )
 
     @staticmethod
-    def get_online_users():
-        return [User(u["_id"]) for u in mongo.db.users.find({"online": True})]
+    def get_users_in_lobby():
+        return [User(u["_id"]) for u in mongo.db.users.find({"in_lobby": True})]
 
     @staticmethod
     def exists(user_id):
@@ -92,13 +107,15 @@ class User():
         mongo.db.users.insert_one({
             "_id": user_id,
             "access_token": access_token,
-            # "expires_in": vk_access_info.get("expires_in")
             "vk_user_page": "https://vk.com/id%s" % user_id,
             "first_name": vk_user_info.get("first_name", "Unknown"),
             "last_name": vk_user_info.get("last_name", "Unknown"),
             "avatar": vk_user_info.get("photo_50",
                                        "static/img/anonymous_50.png"),
-            "online": False
+            "in_lobby": False,
+            "in_room": None,
+            "role": None,
+            "score": 0
         })
 
         return {"success": True}
@@ -146,5 +163,56 @@ class User():
 class Room(object):
     """
     """
-    def __init__(self):
-        pass
+    roles = ["quiz-master", "player", "spectator"]
+
+    def __init__(self, room_name):
+        self.room_name = room_name
+        if not mongo.db.rooms.find_one({"room_name": room_name}):
+            result = mongo.db.rooms.insert_one({"room_name": room_name,
+                                                "room_password": None,
+                                                "members": []})
+
+    def add_member(self, user_id):
+        return mongo.db.rooms.update_one({"room_name": self.room_name},
+                                         {"$addToSet": {"members": user_id}})
+
+    def remove_member(self, user_id):
+        return mongo.db.rooms.update_one({"room_name": self.room_name},
+                                         {"$pull": {"members": user_id}})
+
+    def members(self):
+        return [User(user_id) for user_id in mongo.db.rooms\
+                .find_one({"room_name": self.room_name})\
+                .get("members")]
+
+    def password(self):
+        return mongo.db.rooms.find_one({"room_name": self.room_name})\
+                             .get("room_password")
+
+    def set_password(self, password):
+        return mongo.db.rooms.update_one({"room_name": self.room_name},
+                                         {"$set": {"room_password": password}})
+
+    def quiz_master(self):
+        result = filter(lambda u: u.role() == "quiz-master", self.members())
+        return result and result[0] or None
+
+    def delete_room(self):
+        for user_id in self.members():
+            u = User(user_id)
+            u.set_in_room(None)
+        return mongo.db.rooms.remove({"room_name": self.room_name})
+
+    def json(self):
+        r = mongo.db.rooms.find_one({"room_name": self.room_name})
+        return {"room_name": self.room_name,
+                "members": r["members"],
+                "has_quiz_master": bool(self.quiz_master())}
+
+    @staticmethod
+    def get_available_rooms():
+        return [Room(r["room_name"]) for r in mongo.db.rooms.find({})]
+
+    @staticmethod
+    def room_name_exists(room_name):
+        return bool(mongo.db.rooms.find_one({"room_name": room_name}))
