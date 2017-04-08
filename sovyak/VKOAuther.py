@@ -6,7 +6,7 @@ class VKOAuther(object):
 
 
     def __init__(self, VK_APP_ID, VK_APP_SECRET,
-                 VK_REDIRECT_URI="http://ovz1.novrr.6pqj1.vps.myjino.ru", # "https://oauth.vk.com/blank.html",
+                 VK_REDIRECT_URI="https://oauth.vk.com/blank.html",
                  VK_API_VERSION="5.63"):
         self.VK_APP_ID = VK_APP_ID
         self.VK_APP_SECRET = VK_APP_SECRET
