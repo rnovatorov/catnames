@@ -74,6 +74,7 @@ def logout():
     r = Room(room_name)
     r.remove_member(current_user.user_id)
     current_user.set_in_room(None)
+    current_user.set_role(None)
     flash("You left room '%s'." % room_name, "success")
 
     if not r.members():
@@ -169,7 +170,14 @@ def enter_room(room_name, role):
         current_user.set_in_room(room_name)
         current_user.set_role(role)
         r.add_member(current_user.user_id)
-        flash("You are allowed to pass!", "success")
+
+        # Emitting change of available rooms
+        socketio.emit("available_rooms", r.json(), namespace="/lobby")
+        # And new user in room
+        socketio.emit("users_in_room", r.json(),
+                       namespace="/room_%s" % room_name)
+
+        flash("Entered as '%s'." % role, "success")
         return redirect(url_for("room", room_name=room_name))
 
     return render_template("enter_room.html",
@@ -187,8 +195,8 @@ def room(room_name):
         flash("Room '%s' does not exist." % room_name, "danger") 
         return redirect(url_for("lobby"))
     elif current_user.in_room() != room_name:
-        flash("You do not belong to this room")
-        return redirect(url_for("lobby"))
+        flash("You are in another room")
+        return redirect(url_for("room", room_name=current_user.in_room()))
 
     r = Room(room_name)
 
@@ -211,6 +219,7 @@ def leave_room(room_name):
     r = Room(room_name)
     r.remove_member(current_user.user_id)
     current_user.set_in_room(None)
+    current_user.set_role(None)
     flash("You left room '%s'." % room_name, "info")
 
     if not r.members():

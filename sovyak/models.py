@@ -197,6 +197,9 @@ class Room(object):
         result = filter(lambda u: u.role() == "quiz-master", self.members())
         return result and result[0] or None
 
+    def players(self):
+        return filter(lambda u: u.role() == "player", self.members())
+
     def delete_room(self):
         for user_id in self.members():
             u = User(user_id)
@@ -205,9 +208,10 @@ class Room(object):
 
     def json(self):
         r = mongo.db.rooms.find_one({"room_name": self.room_name})
+        has_quiz_master = bool(self.quiz_master())
         return {"room_name": self.room_name,
                 "members": r["members"],
-                "has_quiz_master": bool(self.quiz_master())}
+                "has_quiz_master": has_quiz_master}
 
     @staticmethod
     def get_available_rooms():

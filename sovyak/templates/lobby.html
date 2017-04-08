@@ -18,7 +18,7 @@
                 <div class="panel-body">
                     <ul id="available_rooms_list" class="list-group">
                     {% for r in available_rooms %}
-                        <li id="{{ r.room_name }}" class="list-group-item">
+                        <li id="room_{{ r.room_name }}" class="list-group-item">
                             <div class="dropdown">
                                 <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
                                     {{ r.room_name }}

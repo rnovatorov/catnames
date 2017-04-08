@@ -1,21 +1,41 @@
 {% extends "base.html" %}
 
-{% block heading %}
-    {{ room_name }}
-{% endblock %}
-
 {% block content %}
-    <div class="users_in_room col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 align="center">Users in room:</h4>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 align="center">Timer:</h4>
+                </div>
+                <div class="panel-body">
+                </div>
             </div>
-            <div class="panel-body">
-                <ul id="users_in_room_list" class="list-group">
-                {% for u in members: %}
-                    {% include 'user.html' %}
-                {% endfor %}
-                </ul>
+        </div>
+        <div class="questions col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 align="center">Question:</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="well well-lg">Large Well</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <input class="form-control input-lg" type="text">
+            </div>
+        </div>
+        <div class="users_in_room col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 align="center">Users in room:</h4>
+                </div>
+                <div class="panel-body">
+                    <ul id="users_in_room_list" class="list-group">
+                    {% for u in members: %}
+                        {% include 'user.html' %}
+                    {% endfor %}
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

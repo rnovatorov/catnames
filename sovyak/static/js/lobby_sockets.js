@@ -4,13 +4,13 @@ $(document).ready(function() {
 
     socket.on("users_in_lobby", function(u) {
         console.log(u);
-        var elem = $("#" + u.user_id);
+        var elem = $("#user_" + u.user_id);
         if (u["in_lobby"] == true) {
             if ( elem[0] ) {
                 elem.show();
             } else {
                 $("#users_in_lobby_list").append(
-                    "<li class='list-group-item' id='" + u.user_id + "'>" +
+                    "<li class='list-group-item' id='user_" + u.user_id + "'>" +
                         "<img class='avatar img-rounded' src='" + u.avatar + "'/> " +
                         "<a href='" + u.vk_user_page + "'>" +
                             "<span class='full_name'>" + u.full_name + "</span>" +
@@ -25,13 +25,13 @@ $(document).ready(function() {
 
     socket.on("available_rooms", function(r) {
         console.log(r);
-        var elem = $("#" + r.room_name);
+        var elem = $("#room_" + r.room_name);
         if (r["members"].length > 0) {
             if ( elem[0] ) {
                 elem.show();
             } else {
                 var new_elems = (
-                    '<li id=' + r.room_name + ' class="list-group-item">' +
+                    '<li id="room_' + r.room_name + '" class="list-group-item">' +
                         '<div class="dropdown">' +
                                 '<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">' +
                                 r.room_name +
