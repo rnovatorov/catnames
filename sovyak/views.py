@@ -1,5 +1,5 @@
-from flask import render_template, flash, redirect, url_for, request, g
-from flask_socketio import emit, send
+import flask_socketio as fsio
+from flask import render_template, flash, redirect, url_for, request, g, session
 from flask_login import login_user, logout_user, current_user, login_required
 from sovyak import app, socketio, mongo, lm, vk_oauther
 from .models import User, Room
@@ -89,20 +89,6 @@ def logout():
     return redirect(url_for("index"))
 
 
-@socketio.on("connect", namespace="/lobby")
-def connect():
-    app.logger.info("User %s is in lobby" % current_user.user_id)
-    current_user.set_in_lobby(True)
-    socketio.emit("users_in_lobby", current_user.json(), namespace="/lobby")
-
-
-@socketio.on("disconnect", namespace="/lobby")
-def disconnect():
-    app.logger.info("User %s is not in lobby" % current_user.user_id)
-    current_user.set_in_lobby(False)
-    socketio.emit("users_in_lobby", current_user.json(), namespace="/lobby")
-
-
 @app.route("/lobby", methods=["GET", "POST"])
 @login_required
 def lobby():
@@ -123,6 +109,7 @@ def lobby():
         r.add_member(current_user.user_id)
         current_user.set_in_room(room_name)
         current_user.set_role(role)
+        session["game"] = room_name
 
         # Emitting change of available rooms
         socketio.emit("available_rooms", r.json(), namespace="/lobby")
@@ -170,6 +157,7 @@ def enter_room(room_name, role):
         current_user.set_in_room(room_name)
         current_user.set_role(role)
         r.add_member(current_user.user_id)
+        session["room"] = room_name
 
         # Emitting change of available rooms
         socketio.emit("available_rooms", r.json(), namespace="/lobby")
@@ -220,6 +208,8 @@ def leave_room(room_name):
     r.remove_member(current_user.user_id)
     current_user.set_in_room(None)
     current_user.set_role(None)
+    session["game"] = ""
+
     flash("You left room '%s'." % room_name, "info")
 
     if not r.members():

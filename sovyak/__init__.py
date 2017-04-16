@@ -34,9 +34,9 @@ lm.login_view = "login"
 lm.login_message_category = "info"
 
 # For VK
-from sovyak import VKOAuther
+from . import VKOAuther
 vk_oauther = VKOAuther.VKOAuther(VK_APP_ID, VK_APP_SECRET,
                                  VK_REDIRECT_URI=VK_REDIRECT_URI)
 
 # Importing views, models
-from sovyak import views, models
+from . import views, events, models

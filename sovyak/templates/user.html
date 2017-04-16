@@ -3,14 +3,4 @@
     <a href="{{ u.vk_user_page }}">
         <span class="full_name">{{ u.full_name }}</span>
     </a>
-    {% with role = u.role() %}
-        {% if role == "quiz-master" %}
-            <span class="glyphicon glyphicon-star"></span>
-        {% elif role == "player" %}
-            <span class="glyphicon glyphicon-user"></span>
-            <span class="badge">999{{ u.score() }}</span>
-        {% elif role == "spectator" %}
-            <span class="glyphicon glyphicon-eye-open"></span>
-        {% endif %}
-    {% endwith %}
 </li>
