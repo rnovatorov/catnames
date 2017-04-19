@@ -10,5 +10,3 @@ tmp/*
 # Configs
 config.py
 
-# Archives
-*.tar.gz
