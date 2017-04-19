@@ -2,7 +2,7 @@
 
 
 {% block scripts %}
-    <script type="text/javascript" src="{{ url_for('static', filename='js/room_sockets.js') }}"></script></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/room_sockets.js') }}"></script>
 {% endblock %}
 
 
@@ -11,13 +11,13 @@
         <div class="questions col-md-8">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 align="center">Question:</h4>
+                    <h4 align="center">Chat:</h4>
                 </div>
                 <div class="panel-body">
                     <textarea class="form-control" id="game" disabled="disabled" rows="5"></textarea>
                     <!-- <div class="well well-lg">Large Well</div> -->
                     <div class="form-group">
-                        <h4 align="center">Timer</h4>
+                        <h4 align="center">Input:</h4>
                         <input id="text" class="form-control input-lg" type="text">
                     </div>
                 </div>

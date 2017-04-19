@@ -77,6 +77,11 @@ def logout():
     current_user.set_role(None)
     flash("You left room '%s'." % room_name, "success")
 
+    # room = session.get("room")
+    # fsio.leave_room(room)
+    # app.logger.info("User %s has left the game" % current_user.user_id)
+    # socketio.emit("status", {"msg": current_user.full_name + " has left the room."}, room=room)
+
     if not r.members():
         # Emitting change of available rooms
         socketio.emit("available_rooms", r.json(), namespace="/lobby")
@@ -109,7 +114,7 @@ def lobby():
         r.add_member(current_user.user_id)
         current_user.set_in_room(room_name)
         current_user.set_role(role)
-        session["game"] = room_name
+        session["room"] = room_name
 
         # Emitting change of available rooms
         socketio.emit("available_rooms", r.json(), namespace="/lobby")
@@ -204,11 +209,19 @@ def leave_room(room_name):
         flash("Room '%s' does not exist." % room_name, "danger") 
         return redirect(url_for("lobby"))
 
+    # room = session.get("room")
+    # app.logger.info("Session: %s" % session)
+    # fsio.leave_room(room, sid=session["_id"], namespace="/game")
+    # app.logger.info("User %s has left the game" % current_user.user_id)
+    # socketio.emit("status",
+    #              {"msg": current_user.full_name + " has left the room."},
+    #              room=room,
+    #              namespace="/game")
+
     r = Room(room_name)
     r.remove_member(current_user.user_id)
     current_user.set_in_room(None)
     current_user.set_role(None)
-    session["game"] = ""
 
     flash("You left room '%s'." % room_name, "info")
 
