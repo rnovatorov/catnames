@@ -1,8 +1,15 @@
 {% extends "base.html" %}
 
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/enter_room.css') }}">
+{% endblock %}
+
+
 {% block heading %}
     Enter '{{ room_name }}'
 {% endblock %}
+
 
 {% block content %}
     <div class="row">
@@ -20,7 +27,7 @@
                                 </div>
                             {% endfor %}
                             {{ form.room_password(class_="form-control") }}
-                            <input class="btn btn-default" type="submit" value="Enter">
+                            <input class="btn btn-warning" type="submit" value="Enter">
                         </div>
                     </form>
                 </div>

@@ -52,3 +52,7 @@ html, body {
 #bo .users_list a:active {
     color: gold;
 }
+
+#bo label {
+    color: #74543B;
+}
