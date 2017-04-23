@@ -8,7 +8,7 @@ class CreateRoomForm(FlaskForm):
 
     room_name = StringField("room_name", validators=[DataRequired(),
                                                      Length(min=1, max=32),
-                                                     Regexp(r"[a-zA-Z0-9]+")])
+                                                     Regexp(r"^[a-zA-Z0-9]+$")])
     room_password = PasswordField("room_password", validators=[Length(min=0, max=32)])
     role = SelectField("role", choices=[("quiz-master", "Quiz-Master"),
                                         ("player", "Player"),
