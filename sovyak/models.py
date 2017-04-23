@@ -57,6 +57,7 @@ class User():
                 "avatar": self.avatar,
                 "in_lobby": user_info["in_lobby"],
                 "in_room": user_info["in_room"],
+                "role": user_info["role"],
                 "score": user_info["score"]}
 
     @staticmethod

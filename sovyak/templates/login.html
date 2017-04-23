@@ -1,14 +1,21 @@
 <!-- extend base layout -->
 {% extends "base.html" %}
 
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+
 {% block heading %}
     Login
 {% endblock %}
 
+
 {% block content %}
     <div class="text-center">
         <a href="{{ url_for('vk_oauth') }}" name="vk_oauth">
-            <img src="static/img/vk_button.png">
+            <img class="vk-login-btn" src="static/img/vk_button.png">
         </a>
     </div>
 {% endblock %}

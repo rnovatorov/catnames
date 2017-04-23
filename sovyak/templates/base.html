@@ -11,7 +11,7 @@
         <title>Sovyak</title>
     {% endif %}
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base_styles.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}">
 
     <!-- Styles -->
     {% block styles %}{% endblock %}
@@ -30,9 +30,9 @@
     {% block scripts %}{% endblock %}
 </head>
 
-<body>
+<body id="bo">
     <div class="container-fluid fill">
-        <nav class="navbar navbar-default">
+        <nav class="navbar navbar-dark">
             <div class="container-fluid">
                 <div class="navbar-header">
                     <a class="navbar-brand" href="{{ url_for('index') }}">
@@ -98,8 +98,6 @@
         <h2 align="center">
             {% block heading %}{% endblock %}
         </h2>
-
-        <hr>
 
         {% with messages = get_flashed_messages(with_categories=True) %}
             {% if messages %}

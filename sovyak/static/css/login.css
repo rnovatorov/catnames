@@ -1,0 +1,11 @@
+.vk-login-btn {
+    border-radius: 5px;
+}
+
+.vk-login-btn:hover {
+    box-shadow: 0 0 5px #4E6AA5;
+}
+
+.vk-login-btn:active {
+    margin-top: 2px;
+}

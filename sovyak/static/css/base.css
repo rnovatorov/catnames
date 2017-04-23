@@ -1,0 +1,54 @@
+html, body {
+    height: 100%;
+}
+
+.fill {
+    min-height: 100%;
+    background-color: #362315;
+}
+
+.fill h2 {
+    font-weight: bold;
+    margin-bottom: 0.75em;
+}
+
+.navbar-nav > li > a, .navbar-brand, #bo h2, #bo h4 {
+    color: goldenrod;
+}
+
+.navbar-brand:hover {
+    color: gold;
+}
+
+#bo .form-control:focus {
+    box-shadow: 0 0 5px darkorange;
+    border-color: burlywood;
+}
+
+#bo .form-control, #bo .users_list > li {
+    background-color: lightgoldenrodyellow;
+}
+
+#bo * {
+    border-color: burlywood;
+}
+
+#bo .navbar, #bo .panel-default > .panel-heading {
+    background-color: #74543B;
+}
+
+.panel-body {
+    background-color: #B99B78;
+}
+
+#bo .users_list a {
+    color: #74543B;
+}
+
+#bo .users_list a:hover {
+    color: goldenrod;
+}
+
+#bo .users_list a:active {
+    color: gold;
+}

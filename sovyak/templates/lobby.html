@@ -1,12 +1,20 @@
 {% extends "base.html" %}
 
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/lobby.css') }}">
+{% endblock %}
+
+
 {% block scripts %}
     <script type="text/javascript" src="{{ url_for('static', filename='js/lobby_sockets.js') }}"></script>
 {% endblock %}
 
+
 {% block heading %}
     Lobby
 {% endblock %}
+
 
 {% block content %}
     <div class="row">
@@ -76,7 +84,7 @@
                             {% endfor %}
                             {{ form.role(class_="form-control") }}
                         </div>
-                        <input class="btn btn-default" type="submit" value="Create new room">
+                        <input class="btn btn-warning" type="submit" value="Create new room">
                     </form>
                 </div>
             </div>
@@ -88,7 +96,7 @@
                     <h4 align="center">Users in lobby:</h4>
                 </div>
                 <div class="panel-body">
-                    <ul id="users_in_lobby_list" class="list-group">
+                    <ul id="users_in_lobby_list" class="list-group users_list">
                     {% for u in users_in_lobby: %}
                         {% include 'user.html' %}
                     {% endfor %}

@@ -71,26 +71,22 @@ def login():
 @login_required
 def logout():
     room_name = current_user.in_room()
-    r = Room(room_name)
-    r.remove_member(current_user.user_id)
-    current_user.set_in_room(None)
-    current_user.set_role(None)
-    flash("You left room '%s'." % room_name, "success")
+    if room_name is not None:
+        r = Room(room_name)
+        r.remove_member(current_user.user_id)
+        current_user.set_in_room(None)
+        current_user.set_role(None)
+        flash("You left room '%s'." % room_name, "warning")
 
-    # room = session.get("room")
-    # fsio.leave_room(room)
-    # app.logger.info("User %s has left the game" % current_user.user_id)
-    # socketio.emit("status", {"msg": current_user.full_name + " has left the room."}, room=room)
-
-    if not r.members():
-        # Emitting change of available rooms
-        socketio.emit("available_rooms", r.json(), namespace="/lobby")
-        r.delete_room()
-        flash("Room '%s' has been deleted" % room_name, "info")
+        if not r.members():
+            # Emitting change of available rooms
+            socketio.emit("available_rooms", r.json(), namespace="/lobby")
+            r.delete_room()
+            flash("Room '%s' has been deleted" % room_name, "warning")
 
     logout_user()
 
-    flash("Goodbye!", "info")
+    flash("Goodbye!", "warning")
     return redirect(url_for("index"))
 
 
@@ -99,7 +95,7 @@ def logout():
 def lobby():
     # Disallowing lobby for users who already are in a room
     if current_user.in_room() is not None:
-        flash("Lobby is not accessible while in room.", "info")
+        flash("Lobby is not accessible while in room.", "warning")
         return redirect(url_for("room", room_name=current_user.in_room()))
 
     # Dealing with room creation
@@ -119,7 +115,7 @@ def lobby():
         # Emitting change of available rooms
         socketio.emit("available_rooms", r.json(), namespace="/lobby")
 
-        flash("Room '%s' has been created." % room_name, "success")
+        flash("Room '%s' has been created." % room_name, "warning")
         return redirect(url_for("room", room_name=room_name))
 
     return render_template("lobby.html",
@@ -170,7 +166,7 @@ def enter_room(room_name, role):
         socketio.emit("users_in_room", r.json(),
                        namespace="/room_%s" % room_name)
 
-        flash("Entered as '%s'." % role, "success")
+        flash("Entered as '%s'." % role, "warning")
         return redirect(url_for("room", room_name=room_name))
 
     return render_template("enter_room.html",
@@ -223,13 +219,13 @@ def leave_room(room_name):
     current_user.set_in_room(None)
     current_user.set_role(None)
 
-    flash("You left room '%s'." % room_name, "info")
+    flash("You left room '%s'." % room_name, "warning")
 
     if not r.members():
         # Emitting change of available rooms
         socketio.emit("available_rooms", r.json(), namespace="/lobby")
         r.delete_room()
-        flash("Room '%s' has been deleted" % room_name, "info")
+        flash("Room '%s' has been deleted" % room_name, "warning")
 
     return redirect(url_for("lobby"))
 
