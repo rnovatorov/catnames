@@ -25,7 +25,7 @@ html, body {
     border-color: burlywood;
 }
 
-#bo .form-control, #bo .users_list > li {
+#bo .form-control {
     background-color: lightgoldenrodyellow;
 }
 
@@ -55,4 +55,8 @@ html, body {
 
 #bo label {
     color: #74543B;
+}
+
+.panel-body > ul > li {
+    background-color: lightgoldenrodyellow;
 }
