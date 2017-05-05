@@ -34,11 +34,11 @@ def vk_oauth_callback():
         flash("Authentication failed (code is None).", "danger")
         return redirect(url_for("login"))
     vk_access_info = vk_oauther.get_access_token(code)
-    if "error_description" in vk_access_info:
-        flash("Authentication failed (%s)." % vk_access_info["error_description"], "danger")
-        return redirect(url_for("login"))
-    elif vk_access_info is None:
+    if vk_access_info is None:
         flash("Authentication failed (%s)." % "vk_access_info is None", "danger")
+        return redirect(url_for("login"))
+    elif "error_description" in vk_access_info:
+        flash("Authentication failed (%s)." % vk_access_info["error_description"], "danger")
         return redirect(url_for("login"))
     elif not "user_id" in vk_access_info:
         flash("Authentication failed (%s)." % "No user_id in vk_access_info", "danger")
