@@ -21,7 +21,8 @@ def index():
 def login():
     form = PassLoginForm()
     if form.validate_on_submit():
-        flash("You have sucessfully logged in!", "warning")
+        flash("Sorry, feature not implemented yet :(", "warning")
+        # return(redirect(url_for("index")))
     return render_template("login.html",
         title="Login",
         form=form,
