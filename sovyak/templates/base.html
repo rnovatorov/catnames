@@ -1,118 +1,118 @@
 <html>
 
 <head>
-    <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
 
-    <!-- Title -->
-    {% if title %}
-        <title>{{ title }} | Sovyak</title>
-    {% else %}
-        <title>Sovyak</title>
-    {% endif %}
+  <!-- Title -->
+  {% if title %}
+    <title>{{ title }} | Sovyak</title>
+  {% else %}
+    <title>Sovyak</title>
+  {% endif %}
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}">
 
-    <!-- Styles -->
-    {% block styles %}{% endblock %}
+  <!-- Styles -->
+  {% block styles %}{% endblock %}
 
-    <!-- JQuery -->
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-    
-    <!-- Bootstrap -->
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+  <!-- JQuery -->
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+  
+  <!-- Bootstrap -->
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 
-    <!-- SocketIO -->
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+  <!-- SocketIO -->
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
 
-    <!-- Scripts -->
-    {% block scripts %}{% endblock %}
+  <!-- Scripts -->
+  {% block scripts %}{% endblock %}
 </head>
 
 <body id="bo">
-    <div class="container-fluid fill">
-        <nav class="navbar navbar-dark">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="{{ url_for('index') }}">
-                        Sovyak
-                    </a>
-                </div>
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a href="{{ url_for('index') }}" name="index">
-                            <span class="glyphicon glyphicon-home"></span>
-                            {% if g.user.is_authenticated %}
-                                Home
-                            {% else %}
-                                Index
-                            {% endif %}
-                        </a>
-                    </li>
-                    {% if g.user.is_authenticated %}
-                        <li>
-                        {% with room_name = g.user.in_room() %}
-                            {% if room_name == None %}
-                                <a href="{{ url_for('lobby') }}" name="lobby">
-                                    <span class="glyphicon glyphicon-globe"></span>
-                                    Lobby
-                                </a>
-                            {% else %}
-                                <a href="{{ url_for('room', room_name=room_name) }}" name="room">
-                                    <span class="glyphicon glyphicon-tower"></span>
-                                    Room
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ url_for('leave_room', room_name=room_name) }}" name="leave_room">
-                                    <span class="glyphicon glyphicon-remove"></span>
-                                    Leave room
-                                </a>
-                            </li>
-                            {% endif %}
-                        {% endwith %}
-                        </li>
-                    {% endif %}
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    {% if g.user.is_authenticated %}
-                        <li>
-                            <a href="{{ url_for('logout') }}" name="logout">
-                                <span class="glyphicon glyphicon-log-out"></span>
-                                Logout
-                            </a>
-                        </li>
-                    {% else %}
-                        <li>
-                            <a href="{{ url_for('login') }}" name="login">
-                                <span class="glyphicon glyphicon-log-in"></span>
-                                Login
-                            </a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </nav>
+  <div class="container-fluid fill">
+    <nav class="navbar navbar-dark">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="{{ url_for('index') }}">
+            Sovyak
+          </a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li>
+            <a href="{{ url_for('index') }}" name="index">
+              <span class="glyphicon glyphicon-home"></span>
+              {% if g.user.is_authenticated %}
+                Home
+              {% else %}
+                Index
+              {% endif %}
+            </a>
+          </li>
+          {% if g.user.is_authenticated %}
+            <li>
+            {% with room_name = g.user.in_room() %}
+              {% if room_name == None %}
+                <a href="{{ url_for('lobby') }}" name="lobby">
+                  <span class="glyphicon glyphicon-globe"></span>
+                  Lobby
+                </a>
+              {% else %}
+                <a href="{{ url_for('room', room_name=room_name) }}" name="room">
+                  <span class="glyphicon glyphicon-tower"></span>
+                  Room
+                </a>
+              </li>
+              <li>
+                <a href="{{ url_for('leave_room', room_name=room_name) }}" name="leave_room">
+                  <span class="glyphicon glyphicon-remove"></span>
+                  Leave room
+                </a>
+              </li>
+              {% endif %}
+            {% endwith %}
+            </li>
+          {% endif %}
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          {% if g.user.is_authenticated %}
+            <li>
+              <a href="{{ url_for('logout') }}" name="logout">
+                <span class="glyphicon glyphicon-log-out"></span>
+                Logout
+              </a>
+            </li>
+          {% else %}
+            <li>
+              <a href="{{ url_for('login') }}" name="login">
+                <span class="glyphicon glyphicon-log-in"></span>
+                Login
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
 
-        <h2 align="center">
-            {% block heading %}{% endblock %}
-        </h2>
+    <h2 align="center">
+      {% block heading %}{% endblock %}
+    </h2>
 
-        {% with messages = get_flashed_messages(with_categories=True) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-dismissable alert-{{ category }} fade in">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+    {% with messages = get_flashed_messages(with_categories=True) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-dismissable alert-{{ category }} fade in">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
 
-        {% block content %}{% endblock %}
-    </div>
+    {% block content %}{% endblock %}
+  </div>
 </body>
 
 </html>

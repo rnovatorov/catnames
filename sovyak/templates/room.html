@@ -2,48 +2,48 @@
 
 
 {% block styles %}
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/room.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/room.css') }}">
 {% endblock %}
 
 
 {% block scripts %}
-    <script type="text/javascript" src="{{ url_for('static', filename='js/room_sockets.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/room_sockets.js') }}"></script>
 {% endblock %}
 
 
 {% block content %}
-    <div class="row">
-        <div class="questions col-md-8">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 align="center">Game:</h4>
-                </div>
-                <div class="panel-body">
-                    <textarea class="form-control" id="game" disabled="disabled" rows="5"></textarea>
-                    <div class="user_input form-group">
-                        <input id="user_input" class="form-control input-lg" type="text">
-                    </div>
-                </div>
-            </div>
+  <div class="row">
+    <div class="questions col-md-8">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 align="center">Game:</h4>
         </div>
-        <div class="users_in_room col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 align="center">Users in room:</h4>
-                </div>
-                <div class="panel-body">
-                    <ul id="users_in_room_list" class="list-group users_list">
-                    {% for u in members: %}
-                        {% include 'player.html' %}
-                    {% endfor %}
-
-                 {#    {% for i in range(10) %}
-                        <li class="list-group-item" id="user_47439750"><img class="avatar img-rounded" src="https://pp.userapi.com/c630720/v630720750/489c0/Sr8lFB_T3Ak.jpg"> <a href="https://vk.com/id47439750"><span class="full_name">Roman Novatorov</span></a><span class="glyphicon glyphicon-star"></span></li>
-                    {% endfor %} #}
-
-                    </ul>
-                </div>
-            </div>
+        <div class="panel-body">
+          <textarea class="form-control" id="game" disabled="disabled" rows="5"></textarea>
+          <div class="user_input form-group">
+            <input id="user_input" class="form-control input-lg" type="text">
+          </div>
         </div>
+      </div>
     </div>
+    <div class="users_in_room col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 align="center">Users in room:</h4>
+        </div>
+        <div class="panel-body">
+          <ul id="users_in_room_list" class="list-group users_list">
+          {% for u in members: %}
+            {% include 'player.html' %}
+          {% endfor %}
+
+         {#    {% for i in range(10) %}
+            <li class="list-group-item" id="user_47439750"><img class="avatar img-rounded" src="https://pp.userapi.com/c630720/v630720750/489c0/Sr8lFB_T3Ak.jpg"> <a href="https://vk.com/id47439750"><span class="full_name">Roman Novatorov</span></a><span class="glyphicon glyphicon-star"></span></li>
+          {% endfor %} #}
+
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
