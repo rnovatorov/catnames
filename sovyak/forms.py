@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField
-from wtforms.validators import DataRequired, Length, Regexp
+from wtforms.validators import DataRequired, Length, Regexp, Email, EqualTo
 from sovyak.models import Room
 
 
@@ -38,3 +38,20 @@ class CreateRoomForm(FlaskForm):
 class EnterRoomForm(FlaskForm):
 
     room_password = PasswordField("room_password")
+
+
+class PassLoginForm(FlaskForm):
+
+    email = StringField("email", validators=[DataRequired()])
+    password = PasswordField("password", validators=[DataRequired()])
+
+
+class RegisterForm(FlaskForm):
+
+    username = StringField("username", [Length(min=4, max=25)])
+    email = StringField("email", [Length(min=6, max=35), Email()])
+    password = PasswordField("new_password", [
+        DataRequired(),
+        EqualTo("confirm", message="Passwords must match")
+    ])
+    confirm = PasswordField("Repeat Password")

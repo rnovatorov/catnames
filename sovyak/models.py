@@ -1,4 +1,5 @@
 from sovyak import app, mongo, VK_API_VERSION
+from werkzeug.security import check_password_hash
 import vk
 
 
@@ -69,6 +70,10 @@ class User():
             fields="photo_50",
             version=VK_API_VERSION
         )
+
+    @staticmethod
+    def validate_login(password_hash, password):
+        return check_password_hash(password_hash, password)
 
     @staticmethod
     def get_users_in_lobby():

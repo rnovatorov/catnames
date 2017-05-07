@@ -3,7 +3,7 @@ from flask import render_template, flash, redirect, url_for, request, g, session
 from flask_login import login_user, logout_user, current_user, login_required
 from sovyak import app, socketio, mongo, lm, vk_oauther
 from .models import User, Room
-from .forms import CreateRoomForm, EnterRoomForm
+from .forms import CreateRoomForm, EnterRoomForm, PassLoginForm, RegisterForm
 
 
 @app.before_request
@@ -15,6 +15,46 @@ def before_request():
 @app.route("/index")
 def index():
     return render_template("index.html")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    form = PassLoginForm()
+    if form.validate_on_submit():
+        flash("You have sucessfully logged in!", "warning")
+    return render_template("login.html",
+        title="Login",
+        form=form,
+        request=request
+    )
+
+
+@app.route("/register")
+def register():
+    return "Nothing here yet"
+
+
+@app.route("/logout")
+@login_required
+def logout():
+    room_name = current_user.in_room()
+    if room_name is not None:
+        r = Room(room_name)
+        r.remove_member(current_user.user_id)
+        current_user.set_in_room(None)
+        current_user.set_role(None)
+        flash("You left room '%s'." % room_name, "warning")
+
+        if not r.members():
+            # Emitting change of available rooms
+            socketio.emit("available_rooms", r.json(), namespace="/lobby")
+            r.delete_room()
+            flash("Room '%s' has been deleted" % room_name, "warning")
+
+    logout_user()
+
+    flash("Goodbye!", "warning")
+    return redirect(url_for("index"))
 
 
 @app.route("/vk_oauth")
@@ -60,36 +100,6 @@ def vk_oauth_callback():
     return redirect(url_for("index"))
 
 
-@app.route("/login")
-def login():
-    return render_template("login.html",
-        title="Login"
-    )
-
-
-@app.route("/logout")
-@login_required
-def logout():
-    room_name = current_user.in_room()
-    if room_name is not None:
-        r = Room(room_name)
-        r.remove_member(current_user.user_id)
-        current_user.set_in_room(None)
-        current_user.set_role(None)
-        flash("You left room '%s'." % room_name, "warning")
-
-        if not r.members():
-            # Emitting change of available rooms
-            socketio.emit("available_rooms", r.json(), namespace="/lobby")
-            r.delete_room()
-            flash("Room '%s' has been deleted" % room_name, "warning")
-
-    logout_user()
-
-    flash("Goodbye!", "warning")
-    return redirect(url_for("index"))
-
-
 @app.route("/lobby", methods=["GET", "POST"])
 @login_required
 def lobby():
@@ -124,6 +134,7 @@ def lobby():
         available_rooms=Room.get_available_rooms(),
         users_in_lobby=User.get_users_in_lobby()
     )
+
 
 @app.route("/room/<room_name>/enter/as/<role>", methods=["GET", "POST"])
 @login_required
