@@ -1,0 +1,25 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "ee62163d1d49d13ed0115b5c73596000089de22490687d0a0ebe0cd3d784936f"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_version": "3.7"
+        },
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "async-vk-bot": {
+            "git": "https://github.com/Suenweek/async-vk-bot",
+            "ref": "cf13e4b523572bf0d3b59f4008de347d6e86cc1e"
+        }
+    },
+    "develop": {}
+}

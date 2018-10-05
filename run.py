@@ -1,5 +1,5 @@
-#! venv/bin/python
+import trio
+from app import bot
 
-from sovyak import app, socketio
-
-socketio.run(app)
+if __name__ == '__main__':
+    trio.run(bot)
