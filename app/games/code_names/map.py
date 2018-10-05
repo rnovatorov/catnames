@@ -7,23 +7,20 @@ import more_itertools as mit
 from . import config
 
 
-class TileColor(enum.Enum):
+class Color(enum.Enum):
 
     BLUE = 'blue'
     RED = 'red'
     WHITE = 'white'
     BLACK = 'black'
 
-    def __repr__(self):
-        return f'{self.name}'
-
 
 @dataclass
-class Tile:
+class Cell:
 
-    code_name : str
-    color : TileColor
-    flipped : bool = False
+    code_name: str
+    color: Color
+    flipped: bool = False
 
     def flip(self):
         self.flipped = not self.flipped
@@ -31,17 +28,17 @@ class Tile:
 
 class Map:
 
-    def __init__(self, tiles):
-        self.tiles = tiles
+    def __init__(self, cells):
+        self.cells = cells
 
     @classmethod
     def random(cls):
         code_names = random.sample(config.CODE_NAMES, config.N_TOTAL)
-        tiles = [
-            Tile(code_name=code_names.pop(), color=color)
-            for color in TileColor
+        cells = [
+            Cell(code_name=code_names.pop(), color=color)
+            for color in Color
             for _ in range(getattr(config, f'N_{color.name}'))
         ]
-        random.shuffle(tiles)
-        tiles = mit.chunked(tiles, config.SIDE_LEN)
-        return cls(tiles=list(tiles))
+        random.shuffle(cells)
+        cells = mit.chunked(cells, config.SIDE_LEN)
+        return cls(cells=list(cells))
