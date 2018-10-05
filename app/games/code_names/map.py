@@ -32,8 +32,8 @@ class Map:
         self.cells = cells
 
     @classmethod
-    def random(cls):
-        code_names = random.sample(config.CODE_NAMES, config.N_TOTAL)
+    def random(cls, code_names):
+        code_names = random.sample(code_names, config.N_TOTAL)
         cells = [
             Cell(code_name=code_names.pop(), color=color)
             for color in Color
