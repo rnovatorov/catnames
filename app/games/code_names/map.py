@@ -18,7 +18,7 @@ class Color(enum.Enum):
 @dataclass
 class Cell:
 
-    code_name: str
+    word: str
     color: Color
     flipped: bool = False
 
@@ -32,13 +32,16 @@ class Map:
         self.cells = cells
 
     @classmethod
-    def random(cls, code_names):
-        code_names = random.sample(code_names, config.N_TOTAL)
+    def random(cls, words):
+        assert len(words) >= config.N_TOTAL
+
+        words = random.sample(words, config.N_TOTAL)
         cells = [
-            Cell(code_name=code_names.pop(), color=color)
+            Cell(word=words.pop(), color=color)
             for color in Color
             for _ in range(getattr(config, f'N_{color.name}'))
         ]
         random.shuffle(cells)
         cells = mit.chunked(cells, config.SIDE_LEN)
+
         return cls(cells=list(cells))
