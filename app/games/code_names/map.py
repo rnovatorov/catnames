@@ -30,6 +30,21 @@ class Map:
 
     def __init__(self, cells):
         self.cells = cells
+        self._dict = None
+
+    def __getitem__(self, word):
+        if self._dict is None:
+            self._build_dict()
+
+        y, x = self._dict[word]
+        return self.cells[y][x]
+
+    def _build_dict(self):
+        self._dict = {
+            cell.word: (y, x)
+            for y, row in enumerate(self.cells)
+            for x, cell in enumerate(row)
+        }
 
     @classmethod
     def random(cls, words):
