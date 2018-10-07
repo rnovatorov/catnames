@@ -17,8 +17,7 @@
     },
     "default": {
         "async-vk-bot": {
-            "git": "https://github.com/Suenweek/async-vk-bot",
-            "ref": "cf13e4b523572bf0d3b59f4008de347d6e86cc1e"
+            "git": "https://github.com/Suenweek/async-vk-bot"
         },
         "more-itertools": {
             "hashes": [

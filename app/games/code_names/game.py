@@ -1,5 +1,6 @@
 """
-# Pseudo code for the game:
+# Pseudo code:
+
 async def code_names():
     teams = make_teams()
     b_team, r_team = teams
@@ -19,11 +20,10 @@ async def code_names():
         await send(team.spymaster, map.as_img(reveal=True))
 
     while not winner:
+        await broadcast(map.as_img(reveal=False))
         await broadcast(f'{cur_team}\'s turn')
 
         mistake = False
-
-        await broadcast(map.as_img(reveal=False))
 
         word, n_cells = await msg_from(cur_team.spymaster)
         assert n_cells.is_integer() and n_cells > 0
@@ -41,12 +41,9 @@ async def code_names():
                     winner = another_team()
 
         winner = winner or map.winner()
+        cur_team = another_team()
 
-        if winner:
-            await broadcast(f'winner is {cur_team}')
-
-        else:
-            cur_team = another_team()
+    await broadcast(f'winner is {winner}')
 """
 
 
