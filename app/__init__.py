@@ -1,5 +1,8 @@
+import trio
 from async_vk_bot import Bot
 
-bot = Bot()
 
-from . import events
+async def main():
+    bot = Bot()
+    async with trio.open_nursery() as nursery:
+        nursery.start_soon(bot)

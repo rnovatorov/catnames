@@ -1,5 +1,5 @@
 import trio
-from app import bot
+from app import main
 
 if __name__ == '__main__':
-    trio.run(bot)
+    trio.run(main)
