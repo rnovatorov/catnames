@@ -1,11 +1,16 @@
 import math
 
-N_BLUE = 9
-N_RED = 8
-N_WHITE = 7
-N_BLACK = 1
+BLUE_CELLS = 9
+RED_CELLS = 8
+WHITE_CELLS = 7
+BLACK_CELLS = 1
+TOTAL_CELLS = sum([BLUE_CELLS, RED_CELLS, WHITE_CELLS, BLACK_CELLS])
 
-N_TOTAL = sum([N_BLUE, N_RED, N_WHITE, N_BLACK])
-SIDE_LEN = math.sqrt(N_TOTAL)
-assert SIDE_LEN.is_integer()
-SIDE_LEN = int(SIDE_LEN)
+CELLS_IN_ROW = math.sqrt(TOTAL_CELLS)
+assert CELLS_IN_ROW.is_integer()
+CELLS_IN_ROW = int(CELLS_IN_ROW)
+
+def count_cells(color):
+    return globals()[f'{color.name}_CELLS']
+
+PX_CELL_SIDE = 100
