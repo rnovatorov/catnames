@@ -1,12 +1,12 @@
+from string import ascii_lowercase
+
 from app.games.code_names import config
 from app.games.code_names.map import Map
 
 
-WORDS = ['foobar'] * config.TOTAL_CELLS
-
-
 def test_sanity():
-    map = Map.random(WORDS)
+    words = [ascii_lowercase[:config.MAX_WORD_LEN]] * config.TOTAL_CELLS
+    map = Map.random(words)
 
     revealed_img = map.as_img(reveal=True)
     not_revealed_img = map.as_img(reveal=False)

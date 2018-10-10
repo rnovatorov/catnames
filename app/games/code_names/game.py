@@ -47,8 +47,8 @@ async def code_names():
 """
 
 
-from .map import Map
-from .utils import load_words
+from app.utils import resource
+from app.games.code_names.map import Map
 
 
 class CodeNames:
@@ -57,7 +57,7 @@ class CodeNames:
         self.map = map
 
     @classmethod
-    def create(cls, dict_name='ru-nouns.txt'):
-        words = load_words(dict_name)
+    def create(cls, word_list_name='ru-nouns.txt'):
+        words = resource.word_list(word_list_name)
         map = Map.random(words)
         return cls(map)

@@ -1,38 +1,11 @@
 import random
-from dataclasses import dataclass
 
 import more_itertools as mit
-from PIL import Image, ImageDraw
+from PIL import Image, ImageFont
 
-from . import config
-
-
-@dataclass
-class Cell:
-
-    word: str
-    color: tuple
-    flipped: bool = False
-
-    def flip(self):
-        self.flipped = not self.flipped
-
-    def as_img(self):
-        color = self.color if self.flipped else config.COLOR_GREY
-
-        img = Image.new('RGB', config.PX_CELL_SIZE, color)
-        draw = ImageDraw.Draw(img)
-
-        draw.rectangle(
-            (0, 0, config.PX_CELL_SIDE, config.PX_CELL_SIDE),
-            width=config.BORDER_WIDTH,
-            outline=config.BORDER_COLOR
-        )
-
-        if not self.flipped:
-            draw.text((0, 0), self.word)
-
-        return img
+from app.utils import resource, ctx_if
+from app.games.code_names import config
+from app.games.code_names.cell import Cell
 
 
 class Map:
@@ -49,24 +22,24 @@ class Map:
         return self.cells[y][x]
 
     def as_img(self, reveal=False):
-        map_img = Image.new('RGB', config.PX_MAP_SIZE)
+        map_img = Image.new('RGB', config.MAP_SIZE)
+
+        font = ImageFont.truetype(
+            font=resource.font(config.FONT),
+            size=config.FONT_SIZE
+        )
 
         for y, row in enumerate(self.cells):
             for x, cell in enumerate(row):
-                if reveal:
-                    cell.flip()
-
-                cell_img = cell.as_img()
-                box = (
-                    y * config.PX_CELL_SIDE,
-                    x * config.PX_CELL_SIDE,
-                    (y + 1) * config.PX_CELL_SIDE,
-                    (x + 1) * config.PX_CELL_SIDE,
-                )
-                map_img.paste(cell_img, box)
-
-                if reveal:
-                    cell.flip()
+                with ctx_if(reveal, cell.color_up()):
+                    cell_img = cell.as_img(font=font)
+                    box = (
+                        y * config.CELL_WIDTH,
+                        x * config.CELL_HEIGHT,
+                        (y + 1) * config.CELL_WIDTH,
+                        (x + 1) * config.CELL_HEIGHT,
+                    )
+                    map_img.paste(cell_img, box)
 
         return map_img
 
