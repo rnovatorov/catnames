@@ -47,11 +47,11 @@ async def code_names():
 """
 
 
-from app.utils import resource
-from app.games.code_names.map import Map
+from .utils import resource
+from .map import Map
 
 
-class CodeNames:
+class Game:
 
     def __init__(self, map):
         self.map = map

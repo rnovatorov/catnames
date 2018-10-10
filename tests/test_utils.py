@@ -1,9 +1,9 @@
-from app import utils
+from app.utils import resource
 
 
 DICT_NAME = 'ru-nouns.txt'
 
 
 def test_resource():
-    words = utils.resource.word_list(DICT_NAME)
+    words = resource.word_list(DICT_NAME)
     assert 'наука' in words

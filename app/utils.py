@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 
-from app.resource import Resource
+from .resource import Resource
 
 
 resource = Resource()

@@ -3,9 +3,9 @@ import random
 import more_itertools as mit
 from PIL import Image, ImageFont
 
-from app.utils import resource, ctx_if
-from app.games.code_names import config
-from app.games.code_names.cell import Cell
+from . import config
+from .cell import Cell
+from .utils import resource, ctx_if
 
 
 class Map:

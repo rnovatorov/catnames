@@ -1,7 +1,7 @@
 from string import ascii_lowercase
 
-from app.games.code_names import config
-from app.games.code_names.map import Map
+from app import config
+from app.map import Map
 
 
 def test_sanity():

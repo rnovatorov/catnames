@@ -1,13 +1,13 @@
 from dataclasses import dataclass
 from pathlib import Path
 
-from app import config
+from . import config
 
 
 @dataclass
 class Resource:
 
-    app_dir : Path = config.APP_DIR
+    app_dir: Path = config.APP_DIR
 
     def word_list(self, name):
         with open(self._word_lists_dir / name, encoding='utf-8') as f:

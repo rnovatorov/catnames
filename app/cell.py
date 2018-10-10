@@ -3,7 +3,7 @@ from contextlib import contextmanager
 
 from PIL import Image, ImageDraw
 
-from app.games.code_names import config
+from . import config
 
 
 @dataclass
