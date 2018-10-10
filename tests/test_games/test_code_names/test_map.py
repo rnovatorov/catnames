@@ -7,4 +7,8 @@ WORDS = ['foobar'] * config.TOTAL_CELLS
 
 def test_sanity():
     map = Map.random(WORDS)
-    img = map.cells[0][0].as_img()
+
+    revealed_img = map.as_img(reveal=True)
+    not_revealed_img = map.as_img(reveal=False)
+
+    assert revealed_img != not_revealed_img
