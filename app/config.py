@@ -1,9 +1,15 @@
+import re
 import math
 from pathlib import Path
 
 
 # Misc
+APP_NAME = 'vk-code-names'
 APP_DIR = Path(__file__).parent
+
+# Bot
+RE_CMD_START = re.compile(r'играть')
+RE_MSG_TEXT = re.compile(r'^\[.+\|.+\]\s?,?\s?(.*?)$')
 
 # Colors
 COLOR_BLUE = (61, 128, 168)
@@ -13,6 +19,7 @@ COLOR_BLACK = (44, 45, 40)
 COLOR_GREY = (132, 141, 149)
 
 # Words
+WORD_LIST_NAME = 'ru-nouns.txt'
 MAX_WORD_LEN = 16
 
 # Number of cells

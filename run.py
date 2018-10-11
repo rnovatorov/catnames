@@ -1,6 +1,6 @@
 import trio
 
-from app import main
+from app.dispatcher import main
 
 
 if __name__ == '__main__':

@@ -1,11 +1,10 @@
-from string import ascii_lowercase
-
 from app import config
 from app.map import Map
+from app.utils import resource
 
 
 def test_sanity():
-    words = [ascii_lowercase[:config.MAX_WORD_LEN]] * config.TOTAL_CELLS
+    words = resource.words(config.WORD_LIST_NAME)
     map = Map.random(words)
 
     revealed_img = map.as_img(reveal=True)

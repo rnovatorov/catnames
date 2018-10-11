@@ -46,18 +46,31 @@ async def code_names():
     await broadcast(f'winner is {winner}')
 """
 
+import trio
 
-from .utils import resource
+from . import config
 from .map import Map
+from .team import Team
+from .utils import resource
 
 
 class Game:
 
-    def __init__(self, map):
+    def __init__(self, conv_id, map):
+        self.conv_id = conv_id
         self.map = map
 
+        self.blue_team = None
+        self.red_team = None
+
+    async def start(self):
+        await self.registration()
+
+    async def registration(self):
+        raise NotImplementedError
+
     @classmethod
-    def create(cls, word_list_name='ru-nouns.txt'):
-        words = resource.word_list(word_list_name)
-        map = Map.random(words)
-        return cls(map)
+    async def new(cls, conv_id):
+        words = resource.words(config.WORD_LIST_NAME)
+        map = Map.random(words=words)
+        return cls(conv_id=conv_id, map=map)
