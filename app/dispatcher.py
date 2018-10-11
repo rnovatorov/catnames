@@ -24,7 +24,7 @@ class Dispatcher:
     async def start_game(self, conv_id):
         if conv_id not in self.conv_ids:
             with self.conv_scope(conv_id):
-                game = Game.new(conv_id)
+                game = await Game.new(conv_id)
                 await game.start()
 
     @contextmanager
