@@ -1,7 +1,6 @@
 from contextlib import contextmanager
 
 import trio
-from async_vk_bot import Bot
 
 from . import config
 from .game import Game
@@ -14,12 +13,13 @@ class Dispatcher:
         self.bot = bot
         self.conv_ids = set()
 
-    async def __call__(self, nursery):
-        async for msg in self.get_conv_messages():
-            text = get_msg_text(msg)
-            conv_id = msg['peer_id']
-            if self.match_start_game(text):
-                nursery.start_soon(self.start_game, conv_id)
+    async def __call__(self):
+        async with trio.open_nursery() as nursery:
+            async for msg in self.get_conv_messages():
+                text = get_msg_text(msg)
+                conv_id = msg['peer_id']
+                if self.match_start_game(text):
+                    nursery.start_soon(self.start_game, conv_id)
 
     async def start_game(self, conv_id):
         if conv_id not in self.conv_ids:
@@ -45,11 +45,3 @@ class Dispatcher:
     def match_start_game(text):
         match = config.RE_CMD_START.match(text)
         return match is not None
-
-
-async def main():
-    bot = Bot()
-    dispatcher = Dispatcher(bot)
-    async with trio.open_nursery() as nursery:
-        nursery.start_soon(bot)
-        nursery.start_soon(dispatcher, nursery)
