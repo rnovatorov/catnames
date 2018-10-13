@@ -1,10 +1,10 @@
 from contextlib import contextmanager
 
 import trio
+from async_vk_bot import Bot
 
-from . import config
 from .game import Game
-from .utils import get_msg_text
+from .filters import conv_msg, new_game_cmd
 
 
 class Dispatcher:
@@ -13,19 +13,16 @@ class Dispatcher:
         self.bot = bot
         self.conv_ids = set()
 
-    async def __call__(self):
-        async with trio.open_nursery() as nursery:
-            async for msg in self.get_conv_messages():
-                text = get_msg_text(msg)
-                conv_id = msg['peer_id']
-                if self.match_start_game(text):
-                    nursery.start_soon(self.start_game, conv_id)
+    async def __call__(self, nursery):
+        async for event in self.bot.sub(self.new_game_request):
+            conv_id = event['object']['peer_id']
+            await nursery.start(self.start_game, conv_id)
 
-    async def start_game(self, conv_id):
-        if conv_id not in self.conv_ids:
-            with self.conv_scope(conv_id):
-                game = await Game.new(conv_id)
-                await game.start()
+    async def start_game(self, conv_id, task_status=trio.TASK_STATUS_IGNORED):
+        with self.conv_scope(conv_id):
+            task_status.started()
+            game = await Game.new(conv_id)
+            await game.start()
 
     @contextmanager
     def conv_scope(self, conv_id):
@@ -33,15 +30,17 @@ class Dispatcher:
         yield
         self.conv_ids.remove(conv_id)
 
-    async def get_conv_messages(self):
-        async for event in self.bot.sub(lambda e: (
-            e['type'] == 'message_new'
-            and
-            e['object']['peer_id'] != e['object']['from_id']
-        )):
-            yield event['object']
+    def new_game_request(self, e):
+        return conv_msg(e) and self.new_conv(e) and new_game_cmd(e)
 
-    @staticmethod
-    def match_start_game(text):
-        match = config.RE_CMD_START.match(text)
-        return match is not None
+    def new_conv(self, e):
+        conv_id = e['object']['peer_id']
+        return conv_id not in self.conv_ids
+
+
+async def main():
+    bot = Bot()
+    dispatcher = Dispatcher(bot)
+    async with trio.open_nursery() as nursery:
+        nursery.start_soon(bot)
+        nursery.start_soon(dispatcher, nursery)
