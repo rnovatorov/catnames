@@ -60,11 +60,11 @@ class Game(BaseGame):
 
             cell = self.map[word]
             cell.flip()
+            attempts -= 1
 
             if cell.color is self.cur_team.color:
                 if self.map.all_flipped(self.cur_team.color):
                     self.winner = self.cur_team
-                attempts -= 1
 
             elif cell.color is self.another_team.color:
                 if self.map.all_flipped(self.another_team.color):
@@ -91,6 +91,7 @@ class Game(BaseGame):
 
     async def reveal_map_to_spymasters(self):
         raise NotImplementedError
+
     async def show_map_to_teams(self):
         raise NotImplementedError
 
