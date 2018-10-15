@@ -8,7 +8,7 @@ APP_NAME = 'vk-code-names'
 APP_DIR = Path(__file__).parent
 
 # Bot
-RE_CMD_START = re.compile(r'играть')
+RE_GAME_REQUEST = re.compile(r'^погнали$')
 RE_MSG_TEXT = re.compile(r'^\[.+\|.+\]\s?,?\s?(.*?)$')
 
 # Colors

@@ -2,16 +2,16 @@ from . import config
 from .utils import get_msg_text
 
 
-def conv_msg(e):
-    return (
-        e['type'] == 'message_new'
-        and
-        e['object']['peer_id'] != e['object']['from_id']
-    )
+def new_msg(e):
+    return e['type'] == 'message_new'
 
 
-def new_game_cmd(e):
+def chat_msg(e):
+    return e['object']['peer_id'] != e['object']['from_id']
+
+
+def game_request(e):
     msg = e['object']
     text = get_msg_text(msg)
-    match = config.RE_CMD_START.match(text)
+    match = config.RE_GAME_REQUEST.match(text)
     return match is not None

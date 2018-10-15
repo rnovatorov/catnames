@@ -16,6 +16,14 @@ def ctx_if(cond, ctx_man):
         yield
 
 
+def conjunct(*ps):
+    return lambda e: all(p(e) for p in ps)
+
+
+def disjunct(*ps):
+    return lambda e: any(p(e) for p in ps)
+
+
 def get_msg_text(msg):
     raw = msg['text']
     match = config.RE_MSG_TEXT.match(raw)
