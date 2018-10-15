@@ -7,9 +7,10 @@ from pathlib import Path
 APP_NAME = 'vk-code-names'
 APP_DIR = Path(__file__).parent
 
-# Bot
+# Re
 RE_GAME_REQUEST = re.compile(r'^погнали$')
-RE_MSG_TEXT = re.compile(r'^\[.+\|.+\]\s?,?\s?(.*?)$')
+RE_TEXT_WITH_REFERENCE = re.compile(r'^\[.+\|.+\]\s?,?\s?(.*?)$')
+RE_WORD_AND_NUMBER = re.compile(r'^(\w+)\s(\d+)$')
 
 # Colors
 COLOR_BLUE = (61, 128, 168)
@@ -50,3 +51,6 @@ BORDER_COLOR = 'white'
 # Font
 FONT = 'UbuntuMono-R.ttf'
 FONT_SIZE = 20
+
+# Logic
+MAX_GUESS_ATTEMPTS = max(BLUE_CELLS, RED_CELLS)

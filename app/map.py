@@ -21,6 +21,10 @@ class Map:
         x, y = self._dict[word]
         return self.cells[y][x]
 
+    def all_flipped(self, color):
+        # TODO
+        raise NotImplementedError
+
     def as_img(self, reveal=False):
         map_img = Image.new('RGB', config.MAP_SIZE)
 
