@@ -1,6 +1,7 @@
 from . import config
 from .map import Map
 from .team import Team
+from .photo_uploader import PhotoUploader
 from .filters import new_msg, chat_msg, peer_ids, from_ids
 from .errors import Unreachable, ScrewedUp, BadFormat
 from .utils import resource, conjunct, strip_reference, get_word_and_number
@@ -11,6 +12,8 @@ class BaseGame:
     def __init__(self, bot, chat_id, map):
         self._bot = bot
         self._chat_id = chat_id
+
+        self._pu = PhotoUploader(api=self._bot.api)
 
         self.map = map
         self.blue_team = None
@@ -130,10 +133,10 @@ class Game(BaseGame):
             try:
                 word, number = get_word_and_number(text)
             except BadFormat:
-                raise ScrewedUp('Это еще что за хрень, недоумок?')
+                raise ScrewedUp('Неверный формат, придурок')
 
             if word in self.map:
-                raise ScrewedUp('Ты еще карту им скинь, придурок')
+                raise ScrewedUp('Ты еще карту им скинь, недоумок')
 
             if number not in range(config.MAX_GUESS_ATTEMPTS):
                 raise ScrewedUp('Выбери число попроще, дубина')
