@@ -25,27 +25,13 @@ class Map:
         # TODO
         raise NotImplementedError
 
-    def as_img(self, reveal=False):
-        map_img = Image.new('RGB', config.MAP_SIZE)
+    def as_keyboard(self):
+        # TODO
+        raise NotImplementedError
 
-        font = ImageFont.truetype(
-            font=resource.font(config.FONT),
-            size=config.FONT_SIZE
-        )
-
-        for y, row in enumerate(self.cells):
-            for x, cell in enumerate(row):
-                with ctx_if(reveal, cell.color_up()):
-                    cell_img = cell.as_img(font=font)
-                    box = (
-                        x * config.CELL_WIDTH,
-                        y * config.CELL_HEIGHT,
-                        (x + 1) * config.CELL_WIDTH,
-                        (y + 1) * config.CELL_HEIGHT,
-                    )
-                    map_img.paste(cell_img, box)
-
-        return map_img
+    def as_emojis(self):
+        # TODO
+        raise NotImplementedError
 
     def _build_dict(self):
         self._dict = {

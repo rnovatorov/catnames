@@ -13,16 +13,9 @@ class Resource:
         with open(self._word_lists_dir / name, encoding='utf-8') as f:
             return f.read().split()
 
-    def font(self, name):
-        return str(self._fonts_dir / name)
-
     @property
     def _word_lists_dir(self):
         return self._root_dir / 'word_lists'
-
-    @property
-    def _fonts_dir(self):
-        return self._root_dir / 'fonts'
 
     @property
     def _root_dir(self):

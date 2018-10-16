@@ -1,7 +1,6 @@
 from . import config
 from .map import Map
 from .team import Team
-from .photo_uploader import PhotoUploader
 from .filters import new_msg, chat_msg, peer_ids, from_ids
 from .errors import Unreachable, ScrewedUp, BadFormat
 from .utils import resource, conjunct, strip_reference, get_word_and_number
@@ -12,8 +11,6 @@ class BaseGame:
     def __init__(self, bot, chat_id, map):
         self._bot = bot
         self._chat_id = chat_id
-
-        self._pu = PhotoUploader(api=self._bot.api)
 
         self.map = map
         self.blue_team = None

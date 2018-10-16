@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 async-vk-bot = {git = "https://github.com/Suenweek/async-vk-bot"}
 more-itertools = "*"
-pillow = "*"
 
 [dev-packages]
 pytest = "*"
