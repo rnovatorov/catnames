@@ -1,7 +1,6 @@
 import random
 
 import more_itertools as mit
-from PIL import Image, ImageFont
 
 from . import config
 from .cell import Cell
