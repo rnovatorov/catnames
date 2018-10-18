@@ -3,8 +3,7 @@ import random
 import more_itertools as mit
 
 from . import config
-from .cell import Cell
-from .utils import resource, ctx_if
+from .cell import BlueCell, RedCell, NeutralCell, KillerCell
 
 
 class Map:
@@ -29,8 +28,10 @@ class Map:
         raise NotImplementedError
 
     def as_emojis(self):
-        # TODO
-        raise NotImplementedError
+        return '\n'.join(
+            ' '.join(cell.as_emoji() for cell in row)
+            for row in self.cells
+        )
 
     def _build_dict(self):
         self._dict = {
@@ -42,25 +43,25 @@ class Map:
     @classmethod
     def random(cls, words):
         assert len(words) == len(set(words))
-        assert len(words) >= config.TOTAL_CELLS
+        assert len(words) >= config.N_TOTAL_CELLS
 
-        words = random.sample(words, config.TOTAL_CELLS)
+        words = random.sample(words, config.N_TOTAL_CELLS)
 
         cells = [
-            Cell(word=words.pop(), color=config.COLOR_BLUE)
-            for _ in range(config.BLUE_CELLS)
+            BlueCell(word=words.pop())
+            for _ in range(config.N_BLUE_CELLS)
         ] + [
-            Cell(word=words.pop(), color=config.COLOR_RED)
-            for _ in range(config.RED_CELLS)
+            RedCell(word=words.pop())
+            for _ in range(config.N_RED_CELLS)
         ] + [
-            Cell(word=words.pop(), color=config.COLOR_WHITE)
-            for _ in range(config.WHITE_CELLS)
+            NeutralCell(word=words.pop())
+            for _ in range(config.N_NEUTRAL_CELLS)
         ] + [
-            Cell(word=words.pop(), color=config.COLOR_BLACK)
-            for _ in range(config.BLACK_CELLS)
+            KillerCell(word=words.pop())
+            for _ in range(config.N_KILLER_CELLS)
         ]
 
         random.shuffle(cells)
-        matrix = mit.chunked(cells, config.CELLS_IN_ROW)
+        matrix = mit.chunked(cells, config.N_CELLS_IN_ROW)
 
         return cls(cells=list(matrix))

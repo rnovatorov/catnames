@@ -7,30 +7,40 @@ from pathlib import Path
 APP_NAME = 'vk-code-names'
 APP_DIR = Path(__file__).parent
 
-# Re
+# Regexps
 RE_GAME_REQUEST = re.compile(r'^погнали$')
 RE_TEXT_WITH_REFERENCE = re.compile(r'^\[.+\|.+\]\s?,?\s?(.*?)$')
 RE_WORD_AND_NUMBER = re.compile(r'^(\w+)\s(\d+)$')
 
-# Colors
-COLOR_BLUE = (61, 128, 168)
-COLOR_RED = (231, 100, 90)
-COLOR_WHITE = (213, 204, 183)
-COLOR_BLACK = (44, 45, 40)
-COLOR_GREY = (132, 141, 149)
+# Button colors
+BUTTON_COLOR_NEGATIVE = 'negative'
+BUTTON_COLOR_POSITIVE = 'positive'
+BUTTON_COLOR_DEFAULT = 'default'
+BUTTON_COLOR_PRIMARY = 'primary'
 
-# Number of cells
-BLUE_CELLS = 9
-RED_CELLS = 8
-WHITE_CELLS = 7
-BLACK_CELLS = 1
-TOTAL_CELLS = sum([BLUE_CELLS, RED_CELLS, WHITE_CELLS, BLACK_CELLS])
-CELLS_IN_ROW = math.sqrt(TOTAL_CELLS)
-assert CELLS_IN_ROW.is_integer()
-CELLS_IN_ROW = int(CELLS_IN_ROW)
-CELLS_IN_COL = CELLS_IN_ROW
+# Emojis
+EMOJI_BLUE_HEART = '💙'
+EMOJI_GREEN_HEART = '💚'
+EMOJI_RED_HEART = '❤'
+EMOJI_BLACK_HEART = '🖤'
+
+# Map
+N_BLUE_CELLS = 9
+N_RED_CELLS = 8
+N_NEUTRAL_CELLS = 7
+N_KILLER_CELLS = 1
+N_TOTAL_CELLS = sum([
+    N_BLUE_CELLS,
+    N_RED_CELLS,
+    N_NEUTRAL_CELLS,
+    N_KILLER_CELLS
+])
+N_CELLS_IN_ROW = math.sqrt(N_TOTAL_CELLS)
+assert N_CELLS_IN_ROW.is_integer()
+N_CELLS_IN_ROW = int(N_CELLS_IN_ROW)
+N_CELLS_IN_COL = N_CELLS_IN_ROW
 
 # Game
 MAX_WORD_LEN = 16
-MAX_GUESS_ATTEMPTS = max(BLUE_CELLS, RED_CELLS)
+MAX_GUESS_ATTEMPTS = max(N_BLUE_CELLS, N_RED_CELLS)
 WORD_LIST_NAME = 'ru-nouns.txt'

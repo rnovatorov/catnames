@@ -6,5 +6,13 @@ class ScrewedUp(RuntimeError):
     pass
 
 
-class BadFormat(RuntimeError):
+class BadFormat(ValueError):
+    pass
+
+
+class NoCellColor(ValueError):
+    pass
+
+
+class NoCellEmoji(ValueError):
     pass
