@@ -23,9 +23,11 @@ class Map:
         # TODO
         raise NotImplementedError
 
-    def as_keyboard(self):
-        # TODO
-        raise NotImplementedError
+    def as_keyboard(self, one_time=False):
+        return {
+            'one_time': one_time,
+            'buttons': [cell.as_button() for cell in self.cells]
+        }
 
     def as_emojis(self):
         return '\n'.join(

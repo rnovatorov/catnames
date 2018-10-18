@@ -15,13 +15,16 @@ class Dispatcher:
 
     async def __call__(self):
         async with trio.open_nursery() as nursery:
-            async for request in self.bot.sub(conjunct(
-                filters.new_msg,
-                filters.chat_msg,
-                self.filter_new_chat,
-                filters.game_request
-            )):
-                await nursery.start(self.new_game, request)
+            nursery.start_soon(self.new_game_handler, nursery)
+
+    async def new_game_handler(self, nursery):
+        async for request in self.bot.sub(conjunct(
+            filters.new_msg,
+            filters.chat_msg,
+            self.filter_new_chat,
+            filters.game_request
+        )):
+            await nursery.start(self.new_game, request)
 
     async def new_game(self, request, task_status=trio.TASK_STATUS_IGNORED):
         chat_id = request['object']['peer_id']
