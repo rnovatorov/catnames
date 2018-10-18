@@ -4,7 +4,7 @@ import random
 import more_itertools as mit
 
 from . import config
-from .cell import BlueCell, RedCell, NeutralCell, KillerCell
+from .cells import BlueCell, RedCell, NeutralCell, KillerCell
 
 
 class Map:

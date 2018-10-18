@@ -1,6 +1,7 @@
 from . import config
 from .map import Map
 from .team import Team
+from .cells import NeutralCell, KillerCell
 from .filters import new_msg, chat_msg, peer_ids, from_ids
 from .errors import Unreachable, ScrewedUp, BadFormat
 from .utils import resource, conjunct, strip_reference, get_word_and_number
@@ -86,18 +87,18 @@ class Game(BaseGame):
             cell.flip()
             attempts -= 1
 
-            if cell.color is self.cur_team.color:
+            if isinstance(cell, self.cur_team.button_class):
                 if self.map.all_flipped(self.cur_team.color):
                     self.winner = self.cur_team
 
-            elif cell.color is self.another_team.color:
+            elif isinstance(cell, self.another_team.button_class):
                 if self.map.all_flipped(self.another_team.color):
                     self.winner = self.another_team
 
-            elif cell.color is config.COLOR_WHITE:
+            elif isinstance(cell, NeutralCell):
                 attempts = 0
 
-            elif cell.color is config.COLOR_BLACK:
+            elif isinstance(cell, KillerCell):
                 self.winner = self.another_team
 
             else:

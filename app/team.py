@@ -1,11 +1,11 @@
-from . import config
+from .cells import BlueCell, RedCell
 
 
 class Team:
 
-    def __init__(self, name, color, spymaster_id, player_ids):
+    def __init__(self, name, button_class, spymaster_id, player_ids):
         self.name = name
-        self.color = color
+        self.button_class = button_class
         self.spymaster_id = spymaster_id
         self.player_ids = player_ids
 
@@ -17,7 +17,7 @@ class Team:
     def blue(cls, spymaster_id, player_ids):
         return cls(
             name='Team Blue',
-            color=config.COLOR_BLUE,
+            button_class=BlueCell,
             spymaster_id=spymaster_id,
             player_ids=player_ids
         )
@@ -26,7 +26,7 @@ class Team:
     def red(cls, spymaster_id, player_ids):
         return cls(
             name='Team Red',
-            color=config.COLOR_RED,
+            button_class=RedCell,
             spymaster_id=spymaster_id,
             player_ids=player_ids
         )

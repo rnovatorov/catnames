@@ -32,7 +32,8 @@ class Cell:
                 'type': 'text',
                 'label': self.word
             },
-            'color': self.button_color if self.flipped else config.BUTTON_COLOR_DEFAULT
+            'color': self.button_color if self.flipped
+            else config.BUTTON_COLOR_DEFAULT
         }
 
     def as_emoji(self):
