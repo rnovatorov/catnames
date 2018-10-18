@@ -26,7 +26,10 @@ class Map:
     def as_keyboard(self, one_time=False):
         return {
             'one_time': one_time,
-            'buttons': [cell.as_button() for cell in self.cells]
+            'buttons': [
+                [cell.as_button() for cell in row]
+                for row in self.cells
+            ]
         }
 
     def as_emojis(self):

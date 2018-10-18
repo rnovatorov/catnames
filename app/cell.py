@@ -24,15 +24,16 @@ class Cell:
         self.flipped = old_flipped
 
     def as_button(self):
-        if self.button_color is not None:
-            return {
-                'action': {
-                    'type': 'text',
-                    'label': self.word
-                },
-                'color': self.button_color
-            }
-        raise NoCellColor
+        if self.button_color is None and self.flipped:
+            raise NoCellColor
+
+        return {
+            'action': {
+                'type': 'text',
+                'label': self.word
+            },
+            'color': self.button_color if self.flipped else config.BUTTON_COLOR_DEFAULT
+        }
 
     def as_emoji(self):
         if self.emoji is not None:
