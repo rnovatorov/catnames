@@ -21,19 +21,7 @@ def test_map_as_emoji():
 def test_map_as_keyboard():
     words = resource.words(config.WORD_LIST_NAME)
     map_ = Map.random(words=words)
-    kb = map_.as_keyboard()
-    assert all(
-        button['color'] == config.BUTTON_COLOR_DEFAULT
-        for buttons in kb['buttons']
-        for button in buttons
-    )
-
+    assert config.BUTTON_COLOR_DEFAULT in map_.as_keyboard()
     cell = map_.cells[0][0]
     cell.flip()
-
-    kb = map_.as_keyboard()
-    assert any(
-        button['color'] == cell.button_color
-        for buttons in kb['buttons']
-        for button in buttons
-    )
+    assert cell.button_color in map_.as_keyboard()

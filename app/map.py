@@ -1,3 +1,4 @@
+import json
 import random
 
 import more_itertools as mit
@@ -24,13 +25,13 @@ class Map:
         raise NotImplementedError
 
     def as_keyboard(self, one_time=False):
-        return {
+        return json.dumps({
             'one_time': one_time,
             'buttons': [
                 [cell.as_button() for cell in row]
                 for row in self.cells
             ]
-        }
+        }, ensure_ascii=False)
 
     def as_emojis(self):
         return '\n'.join(
