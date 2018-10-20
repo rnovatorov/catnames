@@ -12,12 +12,7 @@ class BaseGame:
         self.map = map_
 
         self.finished = False
-        self.blue_spymaster = None
-        self.red_spymaster = None
-
-    @property
-    def spymasters(self):
-        return self.blue_spymaster, self.red_spymaster
+        self.spymasters = set()
 
     async def _send(self, **kwargs):
         await self._bot.api.messages.send(**kwargs)
@@ -35,13 +30,10 @@ class BaseGame:
             yield event['object']
 
     async def _wait_message(self, *predicates):
-        event = await self._bot.wait(utils.conjunct(
-            filters.new_msg,
-            filters.chat_msg,
-            filters.peer_ids([self._chat_id]),
-            *predicates
-        ))
-        return event['object']
+        messages = self._sub_for_messages(*predicates).__aiter__()
+        message = await messages.__anext__()
+        await messages.aclose()
+        return message
 
     @classmethod
     async def new(cls, bot, chat_id):
@@ -67,13 +59,10 @@ class Game(BaseGame):
         )
 
     async def registration(self):
-        for color, attr_name in [
-            ('синим', 'blue_spymaster'),
-            ('красным', 'red_spymaster')
-        ]:
-            await self._broadcast(message=f'Кто будет {color} спай-мастером?')
+        for i in range(1, 3):
+            await self._broadcast(message=f'Кто будет {i}-ым спай-мастером?')
             msg = await self._wait_message()
-            setattr(self, attr_name, msg['from_id'])
+            self.spymasters.add(msg['from_id'])
 
     async def reveal_map_to_spymasters(self):
         peer_ids = ','.join(str(spymaster) for spymaster in self.spymasters)
