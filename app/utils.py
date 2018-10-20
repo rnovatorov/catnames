@@ -36,21 +36,3 @@ def strip_reference(text):
     if match is None:
         raise BadFormat
     return match[1]
-
-
-def get_word_and_number(text):
-    match = config.RE_WORD_AND_NUMBER.match(text)
-    if match is None:
-        raise BadFormat
-    word, number = match.groups()
-    return word, int(number)
-
-
-def match_wants_to_play(text):
-    match = config.RE_WANTS_TO_PLAY.match(text)
-    return match is not None
-
-
-def match_stop_recruiting(text):
-    match = config.RE_NO_MORE_PLAYERS.match(text)
-    return match is not None

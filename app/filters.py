@@ -16,18 +16,6 @@ def peer_ids(ids):
     return predicate
 
 
-def from_ids(ids):
-    def predicate(e):
-        return e['object']['from_id'] in ids
-    return predicate
-
-
-def not_from_ids(ids):
-    def predicate(e):
-        return e['object']['from_id'] not in ids
-    return predicate
-
-
 def game_request(e):
     text = strip_reference(e['object']['text'])
     match = config.RE_GAME_REQUEST.match(text)
