@@ -13,6 +13,9 @@ class Map:
         self.cells = cells
         self._dict = None
 
+    def __contains__(self, word):
+        return word in self._dict
+
     def __getitem__(self, word):
         if self._dict is None:
             self._build_dict()
@@ -20,9 +23,13 @@ class Map:
         x, y = self._dict[word]
         return self.cells[y][x]
 
-    def all_flipped(self, color):
-        # TODO
-        raise NotImplementedError
+    def all_flipped(self, cell_class):
+        return all(
+            cell.flipped
+            for row in self.cells
+            for cell in row
+            if isinstance(cell, cell_class)
+        )
 
     def as_keyboard(self, one_time=False):
         return json.dumps({

@@ -2,9 +2,8 @@ from contextlib import contextmanager
 
 import trio
 
-from . import filters
+from . import filters, utils
 from .game import Game
-from .utils import conjunct
 
 
 class Dispatcher:
@@ -18,7 +17,7 @@ class Dispatcher:
             nursery.start_soon(self.new_game_handler, nursery)
 
     async def new_game_handler(self, nursery):
-        async for event in self.bot.sub(conjunct(
+        async for event in self.bot.sub(utils.conjunct(
             filters.new_msg,
             filters.chat_msg,
             self.filter_new_chat,

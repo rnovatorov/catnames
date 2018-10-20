@@ -1,21 +1,21 @@
-from . import config
+from . import config, filters, utils
 from .map import Map
+from .user import User
 from .team import Team
 from .cells import NeutralCell, KillerCell
-from .filters import new_msg, chat_msg, peer_ids, from_ids
 from .errors import Unreachable, ScrewedUp, BadFormat
-from .utils import resource, conjunct, strip_reference, get_word_and_number
 
 
 class BaseGame:
 
-    def __init__(self, bot, chat_id, map):
+    def __init__(self, bot, chat_id, map_, blue_team, red_team):
         self._bot = bot
         self._chat_id = chat_id
 
-        self.map = map
-        self.blue_team = None
-        self.red_team = None
+        self.map = map_
+        self.blue_team = blue_team
+        self.red_team = red_team
+
         self.winner = None
         self.cur_team = None
 
@@ -23,31 +23,40 @@ class BaseGame:
     def teams(self):
         return self.blue_team, self.red_team
 
-    async def _broadcast(self, msg):
-        await self._send_msg(self._chat_id, msg)
+    @property
+    def spymasters(self):
+        return [team.spymaster for team in self.teams]
 
-    async def _send_msg(self, peer_id, msg):
-        await self._bot.api.messages.send(
-            peer_id=peer_id,
-            message=msg
-        )
+    async def _send(self, **kwargs):
+        await self._bot.api.messages.send(**kwargs)
 
-    async def _wait_msg_from(self, ids):
-        async for event in self._bot.sub(conjunct(
-            new_msg, chat_msg,
-            peer_ids([self._chat_id]),
-            from_ids(ids)
-        )):
-            yield event['object']
+    async def _broadcast(self, **kwargs):
+        await self._send(peer_id=self._chat_id, **kwargs)
+
+    async def _wait_msg(self, from_=utils.uniset, ignore=()):
+        event = await self._bot.wait(utils.conjunct(
+            filters.new_msg,
+            filters.chat_msg,
+            filters.peer_ids([self._chat_id]),
+            filters.from_ids(from_),
+            filters.not_from_ids(ignore)
+        ))
+        return event['object']
 
     @classmethod
     async def new(cls, bot, chat_id):
-        words = resource.words(config.WORD_LIST_NAME)
-        map = Map.random(words=words)
+        words = utils.resource.words(config.WORD_LIST_NAME)
+        map_ = Map.random(words=words)
+
+        blue_team = Team.blue()
+        red_team = Team.red()
+
         return cls(
             bot=bot,
             chat_id=chat_id,
-            map=map
+            map_=map_,
+            blue_team=blue_team,
+            red_team=red_team
         )
 
 
@@ -63,13 +72,21 @@ class Game(BaseGame):
 
         await self.announce_winner()
 
+    def in_any_team(self, player):
+        return any(player in team for team in self.teams)
+
     async def registration(self):
-        # TODO
-        raise NotImplementedError
+        roman = User(47439750)
+        sovyak = User(398463689)
+
+        for team in self.teams:
+            team.players.add(roman)
+            team.players.add(sovyak)
+            team.spymaster = roman
 
     async def play_round(self):
-        await self.show_map()
         await self.announce_cur_team()
+        await self.show_map_to_teams()
 
         try:
             word, attempts = await self.get_word_and_number_from_spymaster()
@@ -87,12 +104,12 @@ class Game(BaseGame):
             cell.flip()
             attempts -= 1
 
-            if isinstance(cell, self.cur_team.button_class):
-                if self.map.all_flipped(self.cur_team.color):
+            if isinstance(cell, self.cur_team.cell_class):
+                if self.map.all_flipped(self.cur_team.cell_class):
                     self.winner = self.cur_team
 
-            elif isinstance(cell, self.another_team.button_class):
-                if self.map.all_flipped(self.another_team.color):
+            elif isinstance(cell, self.another_team.cell_class):
+                if self.map.all_flipped(self.another_team.cell_class):
                     self.winner = self.another_team
 
             elif isinstance(cell, NeutralCell):
@@ -111,49 +128,68 @@ class Game(BaseGame):
         return self.blue_team
 
     async def reveal_map_to_spymasters(self):
-        # TODO
-        raise NotImplementedError
+        peer_ids = ','.join(
+            str(spymaster.id)
+            for spymaster in self.spymasters
+        )
+        await self._send(
+            peer_ids=peer_ids,
+            message=self.map.as_emojis()
+        )
 
-    async def show_map(self):
-        # TODO
-        raise NotImplementedError
+    async def show_map_to_teams(self):
+        await self._broadcast(
+            message='Накидывайте варики.',
+            keyboard=self.map.as_keyboard(one_time=False)
+        )
 
     async def announce_winner(self):
-        await self._broadcast(f'Победитель: {self.winner.name}!')
+        await self._broadcast(
+            message=f'Победитель: {self.winner.name}!'
+        )
 
     async def announce_cur_team(self):
-        await self._broadcast(f'Ход {self.cur_team.name}.')
+        await self._broadcast(
+            message=f'Ход {self.cur_team.name}.'
+        )
 
     async def get_word_and_number_from_spymaster(self):
-        async for msg in self._wait_msg_from([self.cur_team.spymaster_id]):
-            text = strip_reference(msg['text'])
+        msg = await self._wait_msg(from_=[self.cur_team.spymaster.id])
+        text = utils.strip_reference(msg['text'])
 
-            try:
-                word, number = get_word_and_number(text)
-            except BadFormat:
-                raise ScrewedUp('Неверный формат, придурок')
+        try:
+            word, number = utils.get_word_and_number(text)
+        except BadFormat:
+            raise ScrewedUp('Неверный формат, придурок')
 
-            if word in self.map:
-                raise ScrewedUp('Ты еще карту им скинь, недоумок')
+        if word in self.map:
+            raise ScrewedUp('Ты еще карту им скинь, недоумок')
 
-            if number not in range(config.MAX_GUESS_ATTEMPTS):
-                raise ScrewedUp('Выбери число попроще, дубина')
+        if number not in range(config.MAX_GUESS_ATTEMPTS):
+            raise ScrewedUp('Выбери число попроще, дубина')
 
-            return word, number
+        return word, number
 
     async def get_team_guess(self):
-        async for msg in self._wait_msg_from([self.cur_team.player_ids]):
-            word = strip_reference(msg['text'])
+        msg = await self._wait_msg(from_=[
+            player.id
+            for player in self.cur_team
+        ], ignore=[
+            self.cur_team.spymaster
+        ])
+        word = utils.strip_reference(msg['text'])
 
-            try:
-                cell = self.map[word]
-            except KeyError:
-                raise ScrewedUp('Такого слова нет, тупица')
+        try:
+            cell = self.map[word]
+        except KeyError:
+            raise ScrewedUp('Такого слова нет, тупица')
 
-            if cell.flipped:
-                raise ScrewedUp('Карточка уже перевернута, идиот')
+        if cell.flipped:
+            raise ScrewedUp('Карточка уже перевернута, идиот')
 
-            return cell
+        return cell
 
     async def blame_team(self, exc):
-        await self._broadcast(f'{self.cur_team.name} облажалась: {exc}.')
+        await self._broadcast(
+            message=f'{self.cur_team.name} облажалась: {str(exc)}.'
+        )

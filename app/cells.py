@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from contextlib import contextmanager
 
 from . import config
 from .errors import NoCellColor, NoCellEmoji
@@ -15,13 +14,6 @@ class Cell:
 
     def flip(self):
         self.flipped = not self.flipped
-
-    @contextmanager
-    def color_up(self):
-        old_flipped = self.flipped
-        self.flipped = True
-        yield
-        self.flipped = old_flipped
 
     def as_button(self):
         if self.button_color is None and self.flipped:

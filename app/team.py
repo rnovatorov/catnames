@@ -3,30 +3,25 @@ from .cells import BlueCell, RedCell
 
 class Team:
 
-    def __init__(self, name, button_class, spymaster_id, player_ids):
+    def __init__(self, name, cell_class):
         self.name = name
-        self.button_class = button_class
-        self.spymaster_id = spymaster_id
-        self.player_ids = player_ids
+        self.cell_class = cell_class
+        self.players = set()
+        self.spymaster = None
 
-    @property
-    def member_ids(self):
-        return self.player_ids + [self.spymaster_id]
+    def __contains__(self, player):
+        return player in self.players
 
     @classmethod
-    def blue(cls, spymaster_id, player_ids):
+    def blue(cls):
         return cls(
-            name='Team Blue',
-            button_class=BlueCell,
-            spymaster_id=spymaster_id,
-            player_ids=player_ids
+            name='Blue team',
+            cell_class=BlueCell,
         )
 
     @classmethod
-    def red(cls, spymaster_id, player_ids):
+    def red(cls):
         return cls(
-            name='Team Red',
-            button_class=RedCell,
-            spymaster_id=spymaster_id,
-            player_ids=player_ids
+            name='Red team',
+            cell_class=RedCell,
         )

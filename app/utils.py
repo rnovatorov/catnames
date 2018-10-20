@@ -7,6 +7,8 @@ from .errors import BadFormat
 
 resource = Resource()
 
+uniset = type('anybody', (), {'__contains__': lambda self, _: True})()
+
 
 @contextmanager
 def ctx_if(cond, ctx_man):
@@ -37,5 +39,14 @@ def get_word_and_number(text):
     if match is None:
         raise BadFormat
     word, number = match.groups()
-
     return word, int(number)
+
+
+def match_wants_to_play(text):
+    match = config.RE_WANTS_TO_PLAY.match(text)
+    return match is not None
+
+
+def match_stop_recruiting(text):
+    match = config.RE_NO_MORE_PLAYERS.match(text)
+    return match is not None
