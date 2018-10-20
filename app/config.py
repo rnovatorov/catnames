@@ -8,11 +8,8 @@ APP_NAME = 'vk-code-names'
 APP_DIR = Path(__file__).parent
 
 # Regexps
-RE_GAME_REQUEST = re.compile(r'^го')
+RE_GAME_REQUEST = re.compile(r'^go|го')
 RE_TEXT_WITH_REFERENCE = re.compile(r'^\[.+\|.+\]\s?,?\s?(.*?)$')
-RE_WORD_AND_NUMBER = re.compile(r'^(\w+)\s(\d+)$')
-RE_WANTS_TO_PLAY = re.compile(r'^я$')
-RE_NO_MORE_PLAYERS = re.compile(r'^все$')
 
 # Button colors
 BUTTON_COLOR_NEGATIVE = 'negative'
