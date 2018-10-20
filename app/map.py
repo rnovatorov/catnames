@@ -55,7 +55,11 @@ class Map:
 
     @classmethod
     def random(cls, words):
-        assert len(words) == len(set(words))
+        words = set(
+            word for word in words
+            if len(word) <= config.MAX_WORD_LEN
+        )
+
         assert len(words) >= config.N_TOTAL_CELLS
 
         words = random.sample(words, config.N_TOTAL_CELLS)
