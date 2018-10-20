@@ -1,22 +1,9 @@
-from contextlib import contextmanager
-
 from . import config
 from .resource import Resource
-from .errors import BadFormat
+from .errors import UnexpectedFormat
 
 
 resource = Resource()
-
-uniset = type('anybody', (), {'__contains__': lambda self, _: True})()
-
-
-@contextmanager
-def ctx_if(cond, ctx_man):
-    if cond:
-        with ctx_man:
-            yield
-    else:
-        yield
 
 
 def conjunct(*ps):
@@ -34,5 +21,5 @@ def empty_keyboard():
 def strip_reference(text):
     match = config.RE_TEXT_WITH_REFERENCE.match(text)
     if match is None:
-        raise BadFormat
+        raise UnexpectedFormat
     return match[1]

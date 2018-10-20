@@ -2,7 +2,7 @@ class Unreachable(RuntimeError):
     pass
 
 
-class BadFormat(ValueError):
+class UnexpectedFormat(ValueError):
     pass
 
 
