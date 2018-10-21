@@ -39,5 +39,5 @@ N_CELLS_IN_COL = 5
 assert N_CELLS_IN_ROW * N_CELLS_IN_COL == N_TOTAL_CELLS
 
 # Game
-MAX_WORD_LEN = 9
+MAX_WORD_LEN = 8
 WORD_LIST_NAME = 'ru-nouns.txt'
