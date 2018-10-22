@@ -1,7 +1,7 @@
 from app.utils import resource
 
 
-DICT_NAME = 'ru-nouns.txt'
+DICT_NAME = 'nouns-ru.txt'
 
 
 def test_resource():
