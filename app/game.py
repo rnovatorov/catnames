@@ -20,20 +20,21 @@ class BaseGame:
     async def _broadcast(self, **kwargs):
         await self._send(peer_id=self._chat_id, **kwargs)
 
+    @utils.aclosing
     async def _sub_for_messages(self, *predicates):
-        async for event in self._bot.sub(utils.conjunct(
+        async with self._bot.sub(utils.conjunct(
             filters.new_msg,
             filters.chat_msg,
             filters.peer_ids([self._chat_id]),
             *predicates
-        )):
-            yield event['object']
+        )) as events:
+            async for event in events:
+                yield event['object']
 
     async def _wait_message(self, *predicates):
-        messages = self._sub_for_messages(*predicates).__aiter__()
-        message = await messages.__anext__()
-        await messages.aclose()
-        return message
+        async with self._sub_for_messages(*predicates) as messages:
+            async for msg in messages:
+                return msg
 
     @classmethod
     async def new(cls, bot, chat_id):
@@ -78,40 +79,43 @@ class Game(BaseGame):
         )
 
     async def wait_winner(self):
-        async for cell in self.wait_guesses():
-            cell.flip()
+        async with self.wait_guesses() as guesses:
+            async for cell in guesses:
+                cell.flip()
 
-            if isinstance(cell, NeutralCell):
-                pass
+                if isinstance(cell, NeutralCell):
+                    pass
 
-            elif isinstance(cell, KillerCell):
-                return cell.emoji
-
-            elif isinstance(cell, (BlueCell, RedCell)):
-                if self.map.all_flipped(type(cell)):
+                elif isinstance(cell, KillerCell):
                     return cell.emoji
 
-            else:
-                raise Unreachable
+                elif isinstance(cell, (BlueCell, RedCell)):
+                    if self.map.all_flipped(type(cell)):
+                        return cell.emoji
 
-            await self.show_map()
+                else:
+                    raise Unreachable
 
+                await self.show_map()
+
+    @utils.aclosing
     async def wait_guesses(self):
-        async for msg in self._sub_for_messages():
-            word = utils.strip_reference(msg['text'])
+        async with self._sub_for_messages() as messages:
+            async for msg in messages:
+                word = utils.strip_reference(msg['text'])
 
-            try:
-                cell = self.map[word]
-            except KeyError:
-                await self._broadcast(
-                    message='Такой клетки нет.'
-                )
-                continue
+                try:
+                    cell = self.map[word]
+                except KeyError:
+                    await self._broadcast(
+                        message='Такой клетки нет.'
+                    )
+                    continue
 
-            if cell.flipped:
-                await self._broadcast(
-                    message='Клетка уже перевернута.'
-                )
-                continue
+                if cell.flipped:
+                    await self._broadcast(
+                        message='Клетка уже перевернута.'
+                    )
+                    continue
 
-            yield cell
+                yield cell

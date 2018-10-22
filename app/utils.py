@@ -1,3 +1,7 @@
+from functools import wraps
+
+from async_generator import aclosing as _aclosing
+
 from . import config
 from .resource import Resource
 from .errors import UnexpectedFormat
@@ -23,3 +27,10 @@ def strip_reference(text):
     if match is None:
         raise UnexpectedFormat
     return match[1]
+
+
+def aclosing(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        return _aclosing(func(*args, **kwargs))
+    return wrapper

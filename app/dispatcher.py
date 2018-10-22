@@ -17,13 +17,14 @@ class Dispatcher:
             nursery.start_soon(self.new_game_handler, nursery)
 
     async def new_game_handler(self, nursery):
-        async for event in self.bot.sub(utils.conjunct(
+        async with self.bot.sub(utils.conjunct(
             filters.new_msg,
             filters.chat_msg,
             self.filter_new_chat,
             filters.game_request
-        )):
-            await nursery.start(self.new_game, event)
+        )) as events:
+            async for event in events:
+                await nursery.start(self.new_game, event)
 
     async def new_game(self, event, task_status=trio.TASK_STATUS_IGNORED):
         chat_id = event['object']['peer_id']
