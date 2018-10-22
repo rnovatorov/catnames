@@ -60,7 +60,7 @@ class Game(BaseGame):
 
     async def registration(self):
         for i in range(1, 3):
-            await self._broadcast(message=f'Кто будет {i}-ым спай-мастером?')
+            await self._broadcast(message=f'Кто будет {i}-ым ведущим?')
             msg = await self._wait_message()
             self.spymasters.add(msg['from_id'])
 
@@ -73,7 +73,7 @@ class Game(BaseGame):
 
     async def show_map(self):
         await self._broadcast(
-            message='Выбирайте слово.',
+            message='Выбирайте клетку.',
             keyboard=self.map.as_keyboard(one_time=False)
         )
 
@@ -104,13 +104,13 @@ class Game(BaseGame):
                 cell = self.map[word]
             except KeyError:
                 await self._broadcast(
-                    message='Такого слова нет, тупица.'
+                    message='Такой клетки нет.'
                 )
                 continue
 
             if cell.flipped:
                 await self._broadcast(
-                    message='Слово уже перевернуто.'
+                    message='Клетка уже перевернута.'
                 )
                 continue
 
