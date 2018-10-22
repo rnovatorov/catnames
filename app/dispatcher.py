@@ -30,7 +30,7 @@ class Dispatcher:
         chat_id = event['object']['peer_id']
         with self.chat_scope(chat_id):
             task_status.started()
-            game = await Game.new(self.bot, chat_id)
+            game = Game(self.bot, chat_id)
             await game.start()
 
     @contextmanager

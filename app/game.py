@@ -6,11 +6,11 @@ from .errors import Unreachable
 
 class BaseGame:
 
-    def __init__(self, bot, chat_id, map_):
+    def __init__(self, bot, chat_id):
         self._bot = bot
         self._chat_id = chat_id
-        self.map = map_
 
+        self.map = None
         self.finished = False
         self.spymasters = set()
 
@@ -36,16 +36,6 @@ class BaseGame:
             async for msg in messages:
                 return msg
 
-    @classmethod
-    async def new(cls, bot, chat_id):
-        words = utils.resource.words(config.WORD_LIST_NAME)
-        map_ = Map.random(words=words)
-        return cls(
-            bot=bot,
-            chat_id=chat_id,
-            map_=map_
-        )
-
 
 class Game(BaseGame):
 
@@ -64,6 +54,9 @@ class Game(BaseGame):
             await self._broadcast(message=f'Кто будет {i}-ым ведущим?')
             msg = await self._wait_message()
             self.spymasters.add(msg['from_id'])
+
+        words = utils.resource.words(config.WORD_LIST_NAME)
+        self.map = Map.random(words=words)
 
     async def reveal_map_to_spymasters(self):
         peer_ids = ','.join(str(spymaster) for spymaster in self.spymasters)
