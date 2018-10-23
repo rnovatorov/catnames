@@ -1,3 +1,5 @@
+from async_vk_bot.utils import aclosed
+
 from . import config, filters, utils
 from .map import Map
 from .cells import BlueCell, RedCell, NeutralCell, KillerCell
@@ -20,7 +22,7 @@ class BaseGame:
     async def _broadcast(self, **kwargs):
         await self._send(peer_id=self._chat_id, **kwargs)
 
-    @utils.aclosing
+    @aclosed
     async def _sub_for_messages(self, *predicates):
         async with self._bot.sub(utils.conjunct(
             filters.new_msg,
@@ -91,7 +93,7 @@ class Game(BaseGame):
 
                 await self.show_map()
 
-    @utils.aclosing
+    @aclosed
     async def wait_guesses(self):
         async with self._sub_for_messages() as messages:
             async for msg in messages:
