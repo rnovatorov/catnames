@@ -40,4 +40,5 @@ assert N_CELLS_IN_ROW * N_CELLS_IN_COL == N_TOTAL_CELLS
 
 # Game
 MAX_WORD_LEN = 8
-WORD_LIST_NAME = 'nouns-ru.txt'
+ALLOW_CHOOSING_WORD_LIST = False
+DEFAULT_WORD_LIST_NAME = 'nouns-ru.txt'

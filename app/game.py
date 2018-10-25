@@ -4,6 +4,7 @@ from . import config, filters, utils
 from .map import Map
 from .cells import BlueCell, RedCell, NeutralCell, KillerCell
 from .errors import Unreachable
+from .keyboard import Keyboard
 
 
 class BaseGame:
@@ -48,17 +49,23 @@ class Game(BaseGame):
         winner = await self.wait_winner()
         await self._broadcast(
             message=winner,
-            keyboard=utils.empty_keyboard()
+            keyboard=Keyboard.empty().dump()
         )
 
     async def registration(self):
+        words = await self.wait_words()
+        self.map = Map.random(words=words)
+
         for i in range(1, 3):
             await self._broadcast(message=f'Кто будет {i}-ым ведущим?')
             msg = await self._wait_message()
             self.spymasters.add(msg['from_id'])
 
-        words = utils.resource.words(config.WORD_LIST_NAME)
-        self.map = Map.random(words=words)
+    async def wait_words(self):
+        # TODO: Implement.
+        if config.ALLOW_CHOOSING_WORD_LIST:
+            raise NotImplementedError
+        return utils.resource.words(config.DEFAULT_WORD_LIST_NAME)
 
     async def reveal_map_to_spymasters(self):
         peer_ids = ','.join(str(spymaster) for spymaster in self.spymasters)
@@ -70,7 +77,7 @@ class Game(BaseGame):
     async def show_map(self):
         await self._broadcast(
             message='Выбирайте клетку.',
-            keyboard=self.map.as_keyboard(one_time=False)
+            keyboard=self.map.as_keyboard(one_time=False).dump()
         )
 
     async def wait_winner(self):

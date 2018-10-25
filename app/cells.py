@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 from . import config
 from .errors import NoCellColor, NoCellEmoji
+from .keyboard import Button
 
 
 @dataclass
@@ -19,14 +20,11 @@ class Cell:
         if self.button_color is None and self.flipped:
             raise NoCellColor
 
-        return {
-            'action': {
-                'type': 'text',
-                'label': self.word
-            },
-            'color': self.button_color if self.flipped
-            else config.BUTTON_COLOR_DEFAULT
-        }
+        return Button(
+            label=self.word,
+            color=self.button_color
+            if self.flipped else config.BUTTON_COLOR_DEFAULT
+        )
 
     def as_emoji(self):
         if self.emoji is not None:

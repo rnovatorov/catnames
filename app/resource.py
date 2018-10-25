@@ -14,6 +14,10 @@ class Resource:
             return f.read().split()
 
     @property
+    def word_lists(self):
+        return self._word_lists_dir.iterdir()
+
+    @property
     def _word_lists_dir(self):
         return self._root_dir / 'word_lists'
 

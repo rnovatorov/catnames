@@ -5,6 +5,7 @@ import more_itertools as mit
 
 from . import config
 from .cells import BlueCell, RedCell, NeutralCell, KillerCell
+from .keyboard import Keyboard
 
 
 class Map:
@@ -31,14 +32,14 @@ class Map:
             if isinstance(cell, cell_class)
         )
 
-    def as_keyboard(self, one_time=False):
-        return json.dumps({
-            'one_time': one_time,
-            'buttons': [
+    def as_keyboard(self, **kwargs):
+        return Keyboard(
+            buttons=[
                 [cell.as_button() for cell in row]
                 for row in self.cells
-            ]
-        }, ensure_ascii=False)
+            ],
+            **kwargs
+        )
 
     def as_emojis(self):
         return '\n'.join(

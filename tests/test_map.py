@@ -5,7 +5,7 @@ from app.utils import resource
 
 
 def test_map_as_emoji():
-    words = resource.words(config.WORD_LIST_NAME)
+    words = resource.words(config.DEFAULT_WORD_LIST_NAME)
     map_ = Map.random(words=words)
 
     assert {
@@ -21,14 +21,14 @@ def test_map_as_emoji():
 
 
 def test_map_as_keyboard():
-    words = resource.words(config.WORD_LIST_NAME)
+    words = resource.words(config.DEFAULT_WORD_LIST_NAME)
     map_ = Map.random(words=words)
-    assert config.BUTTON_COLOR_DEFAULT in map_.as_keyboard()
+    assert config.BUTTON_COLOR_DEFAULT in map_.as_keyboard().dump()
 
     cell = map_.cells[0][0]
     cell.flip()
 
-    assert cell.button_color in map_.as_keyboard()
+    assert cell.button_color in map_.as_keyboard().dump()
 
 
 def test_all_flipped():
