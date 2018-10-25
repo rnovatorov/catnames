@@ -1,12 +1,13 @@
 import json
+from dataclasses import dataclass
 
 
+@dataclass
 class Button:
 
-    def __init__(self, label, color, type='text'):
-        self.label = label
-        self.color = color
-        self.type = type
+    label: str
+    color: str
+    type: str = 'text'
 
     def json(self):
         return {
@@ -18,11 +19,11 @@ class Button:
         }
 
 
+@dataclass
 class Keyboard:
 
-    def __init__(self, buttons, one_time=False):
-        self.buttons = buttons
-        self.one_time = one_time
+    buttons: [[Button]]
+    one_time: bool = False
 
     def json(self):
         return {
