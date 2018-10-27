@@ -20,8 +20,7 @@ class Dispatcher:
         async with self.bot.sub(utils.conjunct(
             filters.new_msg,
             filters.chat_msg,
-            self.filter_new_chat,
-            filters.game_request
+            self.filter_new_chat
         )) as events:
             async for event in events:
                 await nursery.start(self.new_game, event)

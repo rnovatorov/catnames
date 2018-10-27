@@ -14,9 +14,3 @@ def peer_ids(ids):
     def predicate(e):
         return e['object']['peer_id'] in ids
     return predicate
-
-
-def game_request(e):
-    text = strip_reference(e['object']['text'])
-    match = config.RE_GAME_REQUEST.match(text)
-    return match is not None

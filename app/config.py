@@ -8,7 +8,6 @@ APP_NAME = 'vk-code-names'
 APP_DIR = Path(__file__).parent
 
 # Regexps
-RE_GAME_REQUEST = re.compile(r'^go|го')
 RE_TEXT_WITH_REFERENCE = re.compile(r'^\[.+\|.+\]\s?,?\s?(.*?)$')
 
 # Button colors

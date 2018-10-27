@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-async-vk-bot = {git = "https://github.com/Suenweek/async-vk-bot"}
+async-vk-bot = "*"
 more-itertools = "*"
 
 [dev-packages]
