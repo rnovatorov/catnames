@@ -65,7 +65,11 @@ class Game(BaseGame):
         # TODO: Implement.
         if config.ALLOW_CHOOSING_WORD_LIST:
             raise NotImplementedError
-        return utils.resource.words(config.DEFAULT_WORD_LIST_NAME)
+
+        else:
+            word_list_name = config.DEFAULT_WORD_LIST_NAME
+
+        return utils.resource.words(word_list_name)
 
     async def reveal_map_to_spymasters(self):
         peer_ids = ','.join(str(spymaster) for spymaster in self.spymasters)
