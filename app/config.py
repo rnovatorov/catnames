@@ -1,5 +1,4 @@
 import re
-import math
 from pathlib import Path
 
 
@@ -40,4 +39,4 @@ assert N_CELLS_IN_ROW * N_CELLS_IN_COL == N_TOTAL_CELLS
 # Game
 MAX_WORD_LEN = 8
 ALLOW_CHOOSING_WORD_LIST = False
-DEFAULT_WORD_LIST_NAME = 'nouns-ru.txt'
+DEFAULT_WORD_LIST_NAME = 'emojis-all.txt'
