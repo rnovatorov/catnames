@@ -6,7 +6,7 @@ from . import filters, utils
 from .game import Game
 
 
-class Dispatcher:
+class Router:
 
     def __init__(self, bot):
         self.bot = bot
@@ -14,19 +14,16 @@ class Dispatcher:
 
     async def __call__(self):
         async with trio.open_nursery() as nursery:
-            nursery.start_soon(self.new_game_handler, nursery)
+            async with self.bot.sub(utils.conjunct(
+                filters.new_msg,
+                filters.chat_msg,
+                self.filter_new_chat
+            )) as events:
+                async for event in events:
+                    chat_id = event['object']['peer_id']
+                    await nursery.start(self.new_game, chat_id)
 
-    async def new_game_handler(self, nursery):
-        async with self.bot.sub(utils.conjunct(
-            filters.new_msg,
-            filters.chat_msg,
-            self.filter_new_chat
-        )) as events:
-            async for event in events:
-                await nursery.start(self.new_game, event)
-
-    async def new_game(self, event, task_status=trio.TASK_STATUS_IGNORED):
-        chat_id = event['object']['peer_id']
+    async def new_game(self, chat_id, task_status=trio.TASK_STATUS_IGNORED):
         with self.chat_scope(chat_id):
             task_status.started()
             game = Game(self.bot, chat_id)
