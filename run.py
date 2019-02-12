@@ -10,7 +10,7 @@ from app.router import Router
 async def main():
     api = async_vk_api.make_api(
         access_token=os.getenv('VK_API_ACCESS_TOKEN'),
-        version='5.85'
+        version='5.89'
     )
     bot = async_vk_bot.make_bot(api)
     router = Router(bot)
