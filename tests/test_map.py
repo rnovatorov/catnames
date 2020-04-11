@@ -12,12 +12,8 @@ def test_map_as_emoji():
         config.EMOJI_BLUE_HEART,
         config.EMOJI_RED_HEART,
         config.EMOJI_GREEN_HEART,
-        config.EMOJI_BLACK_HEART
-    } == {
-        cell.emoji
-        for row in map_.cells
-        for cell in row
-    }
+        config.EMOJI_BLACK_HEART,
+    } == {cell.emoji for row in map_.cells for cell in row}
 
 
 def test_map_as_keyboard():
@@ -32,14 +28,11 @@ def test_map_as_keyboard():
 
 
 def test_all_flipped():
-    b0 = BlueCell('b0')
-    b1 = BlueCell('b1')
-    n0 = NeutralCell('r0')
-    r0 = RedCell('r1')
-    cells = [
-        [b0, b1],
-        [n0, r0]
-    ]
+    b0 = BlueCell("b0")
+    b1 = BlueCell("b1")
+    n0 = NeutralCell("r0")
+    r0 = RedCell("r1")
+    cells = [[b0, b1], [n0, r0]]
     map_ = Map(cells)
     assert not map_.all_flipped(BlueCell)
     assert not map_.all_flipped(RedCell)

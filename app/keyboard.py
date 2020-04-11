@@ -7,16 +7,10 @@ class Button:
 
     label: str
     color: str
-    type: str = 'text'
+    type: str = "text"
 
     def json(self):
-        return {
-            'action': {
-                'type': self.type,
-                'label': self.label
-            },
-            'color': self.color
-        }
+        return {"action": {"type": self.type, "label": self.label}, "color": self.color}
 
 
 @dataclass
@@ -27,11 +21,8 @@ class Keyboard:
 
     def json(self):
         return {
-            'one_time': self.one_time,
-            'buttons': [
-                [button.json() for button in row]
-                for row in self.buttons
-            ]
+            "one_time": self.one_time,
+            "buttons": [[button.json() for button in row] for row in self.buttons],
         }
 
     def dump(self, ensure_ascii=False):

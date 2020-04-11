@@ -22,8 +22,7 @@ class Cell:
 
         return Button(
             label=self.word,
-            color=self.button_color
-            if self.flipped else config.BUTTON_COLOR_DEFAULT
+            color=self.button_color if self.flipped else config.BUTTON_COLOR_DEFAULT,
         )
 
     def as_emoji(self):
@@ -33,40 +32,32 @@ class Cell:
 
 
 class BlueCell(Cell):
-
     def __init__(self, word):
         super().__init__(
             word=word,
             emoji=config.EMOJI_BLUE_HEART,
-            button_color=config.BUTTON_COLOR_PRIMARY
+            button_color=config.BUTTON_COLOR_PRIMARY,
         )
 
 
 class RedCell(Cell):
-
     def __init__(self, word):
         super().__init__(
             word=word,
             emoji=config.EMOJI_RED_HEART,
-            button_color=config.BUTTON_COLOR_NEGATIVE
+            button_color=config.BUTTON_COLOR_NEGATIVE,
         )
 
 
 class NeutralCell(Cell):
-
     def __init__(self, word):
         super().__init__(
             word=word,
             emoji=config.EMOJI_GREEN_HEART,
-            button_color=config.BUTTON_COLOR_POSITIVE
+            button_color=config.BUTTON_COLOR_POSITIVE,
         )
 
 
 class KillerCell(Cell):
-
     def __init__(self, word):
-        super().__init__(
-            word=word,
-            emoji=config.EMOJI_BLACK_HEART,
-            button_color=None
-        )
+        super().__init__(word=word, emoji=config.EMOJI_BLACK_HEART, button_color=None)

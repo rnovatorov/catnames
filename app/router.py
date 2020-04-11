@@ -7,20 +7,17 @@ from .game import Game
 
 
 class Router:
-
     def __init__(self, bot):
         self.bot = bot
         self.chat_ids = set()
 
     async def __call__(self):
         async with trio.open_nursery() as nursery:
-            async with self.bot.sub(utils.conjunct(
-                filters.new_msg,
-                filters.chat_msg,
-                self.filter_new_chat
-            )) as events:
+            async with self.bot.sub(
+                utils.conjunct(filters.new_msg, filters.chat_msg, self.filter_new_chat)
+            ) as events:
                 async for event in events:
-                    chat_id = event['object']['peer_id']
+                    chat_id = event["object"]["peer_id"]
                     await nursery.start(self.new_game, chat_id)
 
     async def new_game(self, chat_id, task_status=trio.TASK_STATUS_IGNORED):
@@ -36,5 +33,5 @@ class Router:
         self.chat_ids.remove(chat_id)
 
     def filter_new_chat(self, e):
-        chat_id = e['object']['peer_id']
+        chat_id = e["object"]["peer_id"]
         return chat_id not in self.chat_ids

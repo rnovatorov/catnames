@@ -10,7 +10,7 @@ class Resource:
     app_dir: Path = config.APP_DIR
 
     def words(self, name):
-        with open(self._word_lists_dir / name, encoding='utf-8') as f:
+        with open(self._word_lists_dir / name, encoding="utf-8") as f:
             return f.read().split()
 
     @property
@@ -19,8 +19,8 @@ class Resource:
 
     @property
     def _word_lists_dir(self):
-        return self._root_dir / 'word_lists'
+        return self._root_dir / "word_lists"
 
     @property
     def _root_dir(self):
-        return self.app_dir / 'resources'
+        return self.app_dir / "resources"

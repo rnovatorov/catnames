@@ -9,8 +9,7 @@ from app.router import Router
 
 async def main():
     api = async_vk_api.make_api(
-        access_token=os.getenv('VK_API_ACCESS_TOKEN'),
-        version='5.89'
+        access_token=os.getenv("VK_API_ACCESS_TOKEN"), version="5.89"
     )
     bot = async_vk_bot.make_bot(api)
     router = Router(bot)
@@ -20,5 +19,5 @@ async def main():
         nursery.start_soon(router)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     trio.run(main)
