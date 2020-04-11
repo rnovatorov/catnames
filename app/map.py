@@ -1,5 +1,6 @@
 import random
 
+import attr
 import more_itertools as mit
 
 from . import config
@@ -7,10 +8,11 @@ from .cells import BlueCell, RedCell, NeutralCell, KillerCell
 from .keyboard import Keyboard
 
 
+@attr.s
 class Map:
-    def __init__(self, cells):
-        self.cells = cells
-        self._dict = None
+
+    cells = attr.ib()
+    _dict = attr.ib(default=None)
 
     def __contains__(self, word):
         return word in self._dict

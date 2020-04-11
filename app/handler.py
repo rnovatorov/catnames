@@ -1,14 +1,16 @@
 import contextlib
 
 import trio
+import attr
 
 from .game import Game
 
 
+@attr.s
 class Handler:
-    def __init__(self, bot):
-        self.bot = bot
-        self.chat_ids = set()
+
+    bot = attr.ib()
+    chat_ids = attr.ib(factory=set)
 
     async def __call__(self):
         async with trio.open_nursery() as nursery:

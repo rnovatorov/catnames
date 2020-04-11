@@ -1,3 +1,4 @@
+import attr
 import trio
 
 from . import config, wordlist
@@ -6,14 +7,14 @@ from .cells import BlueCell, RedCell, NeutralCell, KillerCell
 from .errors import Unreachable
 
 
+@attr.s
 class BaseGame:
-    def __init__(self, bot, chat_id):
-        self._bot = bot
-        self._chat_id = chat_id
 
-        self.map = None
-        self.finished = False
-        self.spymasters = set()
+    _bot = attr.ib()
+    _chat_id = attr.ib()
+    map = attr.ib(default=None)
+    finished = attr.ib(default=False)
+    spymasters = attr.ib(factory=set)
 
     async def _broadcast(self, text, **kwargs):
         await self._send(self._chat_id, text, **kwargs)
