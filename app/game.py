@@ -8,7 +8,7 @@ from .errors import Unreachable
 
 
 @attr.s
-class BaseGame:
+class Game:
 
     _bot = attr.ib()
     _chat_id = attr.ib()
@@ -16,35 +16,6 @@ class BaseGame:
     finished = attr.ib(default=False)
     spymasters = attr.ib(factory=set)
 
-    async def _broadcast(self, text, **kwargs):
-        await self._send(self._chat_id, text, **kwargs)
-
-    async def _send(self, chat_id, text, **kwargs):
-        await self.bot.api.send_message(
-            json={"chat_id": chat_id, "text": text, **kwargs}
-        )
-
-    def _sub_for_messages(self):
-        return self._bot.sub(self._new_message)
-
-    async def _wait_message(self):
-        return await self._bot.wait(self._new_message)
-
-    def _new_message(self, update):
-        msg = update.get("message")
-        if msg is None:
-            return False
-
-        from_ = msg.get("from")
-        if from_ is None:
-            return False
-
-        from_id = from_["id"]
-        chat_id = msg["chat"]["id"]
-        return from_id != chat_id and chat_id == self.chat_id
-
-
-class Game(BaseGame):
     async def start(self):
         await self.registration()
         await self.reveal_map_to_spymasters()
@@ -107,3 +78,30 @@ class Game(BaseGame):
                     raise Unreachable
 
                 await self.show_map()
+
+    async def _broadcast(self, text, **kwargs):
+        await self._send(self._chat_id, text, **kwargs)
+
+    async def _send(self, chat_id, text, **kwargs):
+        await self.bot.api.send_message(
+            json={"chat_id": chat_id, "text": text, **kwargs}
+        )
+
+    def _sub_for_messages(self):
+        return self._bot.sub(self._new_message)
+
+    async def _wait_message(self):
+        return await self._bot.wait(self._new_message)
+
+    def _new_message(self, update):
+        msg = update.get("message")
+        if msg is None:
+            return False
+
+        from_ = msg.get("from")
+        if from_ is None:
+            return False
+
+        from_id = from_["id"]
+        chat_id = msg["chat"]["id"]
+        return from_id != chat_id and chat_id == self.chat_id
