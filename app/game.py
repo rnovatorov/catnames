@@ -1,6 +1,6 @@
 import trio
 
-from . import config, utils
+from . import config, wordlist
 from .map import Map
 from .cells import BlueCell, RedCell, NeutralCell, KillerCell
 from .errors import Unreachable
@@ -64,11 +64,7 @@ class Game(BaseGame):
         # TODO: Implement.
         if config.ALLOW_CHOOSING_WORD_LIST:
             raise NotImplementedError
-
-        else:
-            word_list_name = config.DEFAULT_WORD_LIST_NAME
-
-        return utils.resource.words(word_list_name)
+        return wordlist.load(config.DEFAULT_WORD_LIST_NAME)
 
     async def reveal_map_to_spymasters(self):
         text = self.map.as_emojis()
