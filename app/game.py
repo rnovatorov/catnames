@@ -16,14 +16,14 @@ class Game:
     finished = attr.ib(default=False)
     spymasters = attr.ib(factory=set)
 
-    async def start(self):
-        await self.registration()
+    async def __call__(self):
+        await self.choose_spymasters()
         await self.reveal_map_to_spymasters()
         await self.show_map()
         winner = await self.wait_winner()
         await self._broadcast(winner, reply_markup={"remove_keyboard": True})
 
-    async def registration(self):
+    async def choose_spymasters(self):
         words = await self.wait_words()
         self.map_ = Map.random(words=words)
 

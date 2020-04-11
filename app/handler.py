@@ -22,8 +22,7 @@ class Handler:
     async def new_game(self, chat_id, task_status=trio.TASK_STATUS_IGNORED):
         with self.chat_scope(chat_id):
             task_status.started()
-            game = Game(self.bot, chat_id)
-            await game.start()
+            await Game(self.bot, chat_id)()
 
     @contextlib.contextmanager
     def chat_scope(self, chat_id):
