@@ -10,7 +10,7 @@ from .game import Game
 class Handler:
 
     bot = attr.ib()
-    chat_ids = attr.ib(factory=set)
+    chats = attr.ib(factory=set)
 
     async def __call__(self):
         async with trio.open_nursery() as nursery:
@@ -27,9 +27,9 @@ class Handler:
 
     @contextlib.contextmanager
     def chat_scope(self, chat_id):
-        self.chat_ids.add(chat_id)
+        self.chats.add(chat_id)
         yield
-        self.chat_ids.remove(chat_id)
+        self.chats.remove(chat_id)
 
     def new_chat_message(self, update):
         msg = update.get("message")
@@ -42,4 +42,4 @@ class Handler:
 
         from_id = from_["id"]
         chat_id = msg["chat"]["id"]
-        return from_id != chat_id and chat_id not in self.chat_ids
+        return from_id != chat_id and chat_id not in self.chats
