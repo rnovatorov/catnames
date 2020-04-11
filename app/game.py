@@ -17,24 +17,23 @@ class Game:
     spymasters = attr.ib(factory=set)
 
     async def __call__(self):
+        self.create_map()
         await self.choose_spymasters()
         await self.reveal_map_to_spymasters()
         await self.show_map()
         winner = await self.wait_winner()
         await self._broadcast(winner, reply_markup={"remove_keyboard": True})
 
-    async def choose_spymasters(self):
-        words = await self.wait_words()
+    def create_map(self):
+        # TODO: Allow to choose wordlist.
+        words = wordlist.load(config.DEFAULT_WORDLIST_NAME)
         self.map_ = Map.random(words=words)
 
+    async def choose_spymasters(self):
         for i in range(1, 3):
             await self._broadcast(f"Кто будет {i}-ым ведущим?")
             update = await self._wait_message()
             self.spymasters.add(update["message"]["from"]["id"])
-
-    async def wait_words(self):
-        # TODO: Allow to choose wordlist.
-        return wordlist.load(config.DEFAULT_WORDLIST_NAME)
 
     async def reveal_map_to_spymasters(self):
         text = self.map_.as_emojis()
