@@ -33,10 +33,8 @@ class Game:
             self.spymasters.add(update["message"]["from"]["id"])
 
     async def wait_words(self):
-        # TODO: Implement.
-        if config.ALLOW_CHOOSING_WORD_LIST:
-            raise NotImplementedError
-        return wordlist.load(config.DEFAULT_WORD_LIST_NAME)
+        # TODO: Allow to choose wordlist.
+        return wordlist.load(config.DEFAULT_WORDLIST_NAME)
 
     async def reveal_map_to_spymasters(self):
         text = self.map_.as_emojis()

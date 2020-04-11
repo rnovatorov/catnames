@@ -4,7 +4,7 @@ from app.cells import BlueCell, RedCell, NeutralCell
 
 
 def test_map_as_emoji():
-    words = wordlist.load(config.DEFAULT_WORD_LIST_NAME)
+    words = wordlist.load(config.DEFAULT_WORDLIST_NAME)
     map_ = Map.random(words=words)
 
     assert {
@@ -24,7 +24,7 @@ def map_has_color(m, color):
 
 
 def test_map_as_keyboard():
-    words = wordlist.load(config.DEFAULT_WORD_LIST_NAME)
+    words = wordlist.load(config.DEFAULT_WORDLIST_NAME)
     map_ = Map.random(words=words)
     assert map_has_color(map_, config.BUTTON_COLOR_DEFAULT)
 
