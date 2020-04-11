@@ -1,0 +1,19 @@
+language: python
+
+dist: xenial
+
+python:
+  - "3.8"
+
+env:
+  - PIPENV_VERBOSITY=-1
+
+install:
+  - pip install pipenv
+  - pipenv install --dev
+
+before_script:
+  - pipenv run pyflakes .
+
+script:
+  - pipenv run pytest

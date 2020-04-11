@@ -1,5 +1,3 @@
-import pytest
-
 from app import config
 from app.map import Map
 from app.cells import BlueCell, RedCell, NeutralCell
