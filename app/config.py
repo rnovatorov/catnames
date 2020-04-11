@@ -1,13 +1,9 @@
-import re
 from pathlib import Path
 
 
 # Misc
 APP_NAME = "vk-code-names"
 APP_DIR = Path(__file__).parent
-
-# Regexps
-RE_TEXT_WITH_REFERENCE = re.compile(r"^\[.+\|.+\]\s?,?\s?(.*?)$")
 
 # Button colors
 BUTTON_COLOR_NEGATIVE = "negative"

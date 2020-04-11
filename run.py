@@ -1,17 +1,11 @@
-import os
-
 import trio
-import async_vk_api
-import async_vk_bot
+import triogram
 
 from app.router import Router
 
 
 async def main():
-    api = async_vk_api.make_api(
-        access_token=os.getenv("VK_API_ACCESS_TOKEN"), version="5.89"
-    )
-    bot = async_vk_bot.make_bot(api)
+    bot = triogram.make_bot()
     router = Router(bot)
 
     async with trio.open_nursery() as nursery:

@@ -1,10 +1,11 @@
+import pytest
+
 from app import config
 from app.map import Map
 from app.cells import BlueCell, RedCell, NeutralCell
-from app.utils import resource
 
 
-def test_map_as_emoji():
+def test_map_as_emoji(resource):
     words = resource.words(config.DEFAULT_WORD_LIST_NAME)
     map_ = Map.random(words=words)
 
@@ -16,15 +17,23 @@ def test_map_as_emoji():
     } == {cell.emoji for row in map_.cells for cell in row}
 
 
-def test_map_as_keyboard():
+def map_has_color(m, color):
+    for row in m.as_keyboard().buttons:
+        for button in row:
+            if button.color == color:
+                return True
+    return False
+
+
+def test_map_as_keyboard(resource):
     words = resource.words(config.DEFAULT_WORD_LIST_NAME)
     map_ = Map.random(words=words)
-    assert config.BUTTON_COLOR_DEFAULT in map_.as_keyboard().dump()
+    assert map_has_color(map_, config.BUTTON_COLOR_DEFAULT)
 
     cell = map_.cells[0][0]
     cell.flip()
 
-    assert cell.button_color in map_.as_keyboard().dump()
+    assert map_has_color(map_, cell.button_color)
 
 
 def test_all_flipped():

@@ -2,7 +2,6 @@ from contextlib import contextmanager
 
 import trio
 
-from . import filters, utils
 from .game import Game
 
 
@@ -13,11 +12,9 @@ class Router:
 
     async def __call__(self):
         async with trio.open_nursery() as nursery:
-            async with self.bot.sub(
-                utils.conjunct(filters.new_msg, filters.chat_msg, self.filter_new_chat)
-            ) as events:
-                async for event in events:
-                    chat_id = event["object"]["peer_id"]
+            async with self.bot.sub(self.new_chat_message) as updates:
+                async for update in updates:
+                    chat_id = update["message"]["chat"]["id"]
                     await nursery.start(self.new_game, chat_id)
 
     async def new_game(self, chat_id, task_status=trio.TASK_STATUS_IGNORED):
@@ -32,6 +29,15 @@ class Router:
         yield
         self.chat_ids.remove(chat_id)
 
-    def filter_new_chat(self, e):
-        chat_id = e["object"]["peer_id"]
-        return chat_id not in self.chat_ids
+    def new_chat_message(self, update):
+        msg = update.get("message")
+        if msg is None:
+            return False
+
+        from_ = msg.get("from")
+        if from_ is None:
+            return False
+
+        from_id = from_["id"]
+        chat_id = msg["chat"]["id"]
+        return from_id != chat_id and chat_id not in self.chat_ids

@@ -4,11 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-async-vk-bot = "*"
+triogram = "*"
 more-itertools = "*"
 
 [dev-packages]
 pytest = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
