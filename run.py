@@ -1,16 +1,16 @@
 import trio
 import triogram
 
-from app.router import Router
+from app.handler import Handler
 
 
 async def main():
     bot = triogram.make_bot()
-    router = Router(bot)
+    handler = Handler(bot)
 
     async with trio.open_nursery() as nursery:
         nursery.start_soon(bot)
-        nursery.start_soon(router)
+        nursery.start_soon(handler)
 
 
 if __name__ == "__main__":

@@ -5,7 +5,7 @@ import trio
 from .game import Game
 
 
-class Router:
+class Handler:
     def __init__(self, bot):
         self.bot = bot
         self.chat_ids = set()
