@@ -1,4 +1,4 @@
-from contextlib import contextmanager
+import contextlib
 
 import trio
 
@@ -23,7 +23,7 @@ class Handler:
             game = Game(self.bot, chat_id)
             await game.start()
 
-    @contextmanager
+    @contextlib.contextmanager
     def chat_scope(self, chat_id):
         self.chat_ids.add(chat_id)
         yield

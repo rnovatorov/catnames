@@ -1,7 +1,7 @@
-from pathlib import Path
+import pathlib
 
 
-WORDLISTS = Path(__file__).parent.parent / "wordlists"
+WORDLISTS = pathlib.Path(__file__).parent.parent / "wordlists"
 
 
 def load(name):
