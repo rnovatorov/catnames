@@ -30,10 +30,23 @@ class Game:
         self.map_ = Map.random(words=words)
 
     async def choose_spymasters(self):
-        for i in range(1, 3):
-            await self._broadcast(f"Кто будет {i}-ым ведущим?")
-            update = await self._wait_message()
-            self.spymasters.add(update["message"]["from"]["id"])
+        await self.choose_first_spymaster()
+        await self.choose_second_spymaster()
+
+    async def choose_first_spymaster(self):
+        await self._broadcast(f"Кто будет первым спаймастером?")
+        update = await self._wait_message()
+        self.spymasters.add(update["message"]["from"]["id"])
+
+    async def choose_second_spymaster(self):
+        await self._broadcast(f"Кто будет вторым спаймастером?")
+        async with self._sub_for_messages() as updates:
+            async for update in updates:
+                from_id = update["message"]["from"]["id"]
+                if from_id not in self.spymasters:
+                    self.spymasters.add(from_id)
+                    return
+                await self._broadcast(f"Нет, ты первый спаймастер.")
 
     async def reveal_map_to_spymasters(self):
         text = self.map_.as_emojis()
