@@ -5,8 +5,7 @@ from app.cells import BlueCell, RedCell, NeutralCell
 
 def test_map_as_emoji():
     words = wordlist.load(config.DEFAULT_WORDLIST_NAME)
-    map_ = Map.random(words=words)
-
+    map_ = Map.random(words)
     assert {
         config.EMOJI_BLUE_HEART,
         config.EMOJI_RED_HEART,
@@ -15,23 +14,24 @@ def test_map_as_emoji():
     } == {cell.emoji for row in map_.cells for cell in row}
 
 
-def map_has_color(m, color):
-    for row in m.as_keyboard().buttons:
-        for button in row:
-            if button.color == color:
-                return True
-    return False
-
-
 def test_map_as_keyboard():
-    words = wordlist.load(config.DEFAULT_WORDLIST_NAME)
-    map_ = Map.random(words=words)
-    assert map_has_color(map_, config.BUTTON_COLOR_DEFAULT)
+    b0 = BlueCell("b0")
+    b1 = BlueCell("b1")
+    n0 = NeutralCell("n0")
+    r0 = RedCell("r0")
+    cells = [[b0, b1], [n0, r0]]
+    map_ = Map(cells)
 
-    cell = map_.cells[0][0]
-    cell.flip()
+    assert map_.as_keyboard().buttons == [["b0", "b1"], ["n0", "r0"]]
 
-    assert map_has_color(map_, cell.button_color)
+    b1.flip()
+    assert map_.as_keyboard().buttons == [["b0", config.EMOJI_BLUE_HEART], ["n0", "r0"]]
+
+    n0.flip()
+    assert map_.as_keyboard().buttons == [
+        ["b0", config.EMOJI_BLUE_HEART],
+        [config.EMOJI_GREEN_HEART, "r0"],
+    ]
 
 
 def test_all_flipped():
