@@ -1,11 +1,11 @@
-from dataclasses import dataclass
+import attr
 
 from . import config
 from .errors import NoCellColor, NoCellEmoji
 from .keyboard import Button
 
 
-@dataclass
+@attr.s(auto_attribs=True)
 class Cell:
 
     word: str

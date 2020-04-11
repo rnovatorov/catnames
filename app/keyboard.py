@@ -1,7 +1,7 @@
-from dataclasses import dataclass
+import attr
 
 
-@dataclass
+@attr.s(auto_attribs=True)
 class Button:
 
     label: str
@@ -12,7 +12,7 @@ class Button:
         return f"{self.color}: {self.label}"
 
 
-@dataclass
+@attr.s(auto_attribs=True)
 class Keyboard:
 
     buttons: [[Button]]

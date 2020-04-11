@@ -1,10 +1,3 @@
-from pathlib import Path
-
-
-# Misc
-APP_NAME = "vk-code-names"
-APP_DIR = Path(__file__).parent
-
 # Button colors
 BUTTON_COLOR_NEGATIVE = "negative"
 BUTTON_COLOR_POSITIVE = "positive"
