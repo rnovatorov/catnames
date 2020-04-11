@@ -12,7 +12,7 @@ class BaseGame:
 
     _bot = attr.ib()
     _chat_id = attr.ib()
-    map = attr.ib(default=None)
+    map_ = attr.ib(default=None)
     finished = attr.ib(default=False)
     spymasters = attr.ib(factory=set)
 
@@ -54,7 +54,7 @@ class Game(BaseGame):
 
     async def registration(self):
         words = await self.wait_words()
-        self.map = Map.random(words=words)
+        self.map_ = Map.random(words=words)
 
         for i in range(1, 3):
             await self._broadcast(f"Кто будет {i}-ым ведущим?")
@@ -68,14 +68,14 @@ class Game(BaseGame):
         return wordlist.load(config.DEFAULT_WORD_LIST_NAME)
 
     async def reveal_map_to_spymasters(self):
-        text = self.map.as_emojis()
+        text = self.map_.as_emojis()
         async with trio.open_nursery() as nursery:
             for spymaster in self.spymasters:
                 nursery.start_soon(self._send, spymaster, text)
 
     async def show_map(self):
         text = "Выбирайте клетку."
-        reply_markup = self.map.as_keyboard()
+        reply_markup = self.map_.as_keyboard()
         await self._broadcast(text, reply_markup=reply_markup)
 
     async def wait_winner(self):
@@ -85,7 +85,7 @@ class Game(BaseGame):
                 word = update["messsage"]["text"]
 
                 try:
-                    cell = self.map[word]
+                    cell = self.map_[word]
                 except KeyError:
                     await self._broadcast("Такой клетки нет.")
                     continue
@@ -101,7 +101,7 @@ class Game(BaseGame):
                 elif isinstance(cell, KillerCell):
                     return cell.emoji
                 elif isinstance(cell, (BlueCell, RedCell)):
-                    if self.map.all_flipped(type(cell)):
+                    if self.map_.all_flipped(type(cell)):
                         return cell.emoji
                 else:
                     raise Unreachable
