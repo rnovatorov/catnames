@@ -34,13 +34,11 @@ class Map:
 
     def as_keyboard(self, **kwargs):
         return Keyboard(
-            buttons=[[cell.as_button() for cell in row] for row in self.cells], **kwargs
+            buttons=[[cell.label for cell in row] for row in self.cells], **kwargs
         )
 
     def as_emojis(self):
-        return "\n".join(
-            " ".join(cell.as_emoji() for cell in row) for row in self.cells
-        )
+        return "\n".join(" ".join(cell.emoji for cell in row) for row in self.cells)
 
     def _build_dict(self):
         self._dict = {
@@ -52,19 +50,15 @@ class Map:
     @classmethod
     def random(cls, words):
         words = set(word for word in words if len(word) <= config.MAX_WORD_LEN)
-
         assert len(words) >= config.N_TOTAL_CELLS
-
         words = random.sample(words, config.N_TOTAL_CELLS)
 
         cells = (
-            [BlueCell(word=words.pop()) for _ in range(config.N_BLUE_CELLS)]
-            + [RedCell(word=words.pop()) for _ in range(config.N_RED_CELLS)]
-            + [NeutralCell(word=words.pop()) for _ in range(config.N_NEUTRAL_CELLS)]
-            + [KillerCell(word=words.pop()) for _ in range(config.N_KILLER_CELLS)]
+            [BlueCell(words.pop()) for _ in range(config.N_BLUE_CELLS)]
+            + [RedCell(words.pop()) for _ in range(config.N_RED_CELLS)]
+            + [NeutralCell(words.pop()) for _ in range(config.N_NEUTRAL_CELLS)]
+            + [KillerCell(words.pop()) for _ in range(config.N_KILLER_CELLS)]
         )
-
         random.shuffle(cells)
-        matrix = mit.chunked(cells, config.N_CELLS_IN_ROW)
-
-        return cls(cells=list(matrix))
+        cells = list(mit.chunked(cells, config.N_CELLS_IN_ROW))
+        return cls(cells)

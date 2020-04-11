@@ -1,63 +1,45 @@
 import attr
 
 from . import config
-from .errors import NoCellColor, NoCellEmoji
-from .keyboard import Button
 
 
 @attr.s(auto_attribs=True)
 class Cell:
 
     word: str
-    emoji: str = None
-    button_color: str = None
     flipped: bool = False
+
+    @property
+    def emoji(self):
+        raise NotImplementedError
 
     def flip(self):
         self.flipped = not self.flipped
 
-    def as_button(self):
-        if self.button_color is None and self.flipped:
-            raise NoCellColor
-
-        return Button(
-            label=self.word,
-            color=self.button_color if self.flipped else config.BUTTON_COLOR_DEFAULT,
-        )
-
-    def as_emoji(self):
-        if self.emoji is not None:
-            return self.emoji
-        raise NoCellEmoji
+    @property
+    def label(self):
+        return self.emoji if self.flipped else self.word
 
 
 class BlueCell(Cell):
-    def __init__(self, word):
-        super().__init__(
-            word=word,
-            emoji=config.EMOJI_BLUE_HEART,
-            button_color=config.BUTTON_COLOR_PRIMARY,
-        )
+    @property
+    def emoji(self):
+        return config.EMOJI_BLUE_HEART
 
 
 class RedCell(Cell):
-    def __init__(self, word):
-        super().__init__(
-            word=word,
-            emoji=config.EMOJI_RED_HEART,
-            button_color=config.BUTTON_COLOR_NEGATIVE,
-        )
+    @property
+    def emoji(self):
+        return config.EMOJI_RED_HEART
 
 
 class NeutralCell(Cell):
-    def __init__(self, word):
-        super().__init__(
-            word=word,
-            emoji=config.EMOJI_GREEN_HEART,
-            button_color=config.BUTTON_COLOR_POSITIVE,
-        )
+    @property
+    def emoji(self):
+        return config.EMOJI_GREEN_HEART
 
 
 class KillerCell(Cell):
-    def __init__(self, word):
-        super().__init__(word=word, emoji=config.EMOJI_BLACK_HEART, button_color=None)
+    @property
+    def emoji(self):
+        return config.EMOJI_BLACK_HEART

@@ -4,7 +4,6 @@ import trio
 from . import config, wordlist
 from .map import Map
 from .cells import BlueCell, RedCell, NeutralCell, KillerCell
-from .errors import Unreachable
 
 
 @attr.s
@@ -34,19 +33,19 @@ class Game:
         await self.choose_second_spymaster()
 
     async def choose_first_spymaster(self):
-        await self._broadcast(f"Кто будет первым спаймастером?")
+        await self._broadcast("Кто будет первым спай-мастером?")
         update = await self._wait_message()
         self.spymasters.add(update["message"]["from"]["id"])
 
     async def choose_second_spymaster(self):
-        await self._broadcast(f"Кто будет вторым спаймастером?")
+        await self._broadcast("Кто будет вторым спай-мастером?")
         async with self._sub_for_messages() as updates:
             async for update in updates:
                 from_id = update["message"]["from"]["id"]
                 if from_id not in self.spymasters:
                     self.spymasters.add(from_id)
                     return
-                await self._broadcast(f"Нет, ты первый спаймастер.")
+                await self._broadcast("Нет, ты первый спай-мастер.")
 
     async def reveal_map_to_spymasters(self):
         text = self.map_.as_emojis()
@@ -85,7 +84,7 @@ class Game:
                     if self.map_.all_flipped(type(cell)):
                         return cell.emoji
                 else:
-                    raise Unreachable
+                    raise RuntimeError("Unreachable")
 
                 await self.show_map()
 
