@@ -11,6 +11,7 @@ class Handler:
 
     bot = attr.ib()
     chats = attr.ib(factory=set)
+    command = attr.ib(default="/start")
 
     async def __call__(self):
         async with trio.open_nursery() as nursery:
@@ -35,10 +36,19 @@ class Handler:
         if msg is None:
             return False
 
+        text = msg.get("text")
+        if text is None:
+            return False
+
+        chat_id = msg["chat"]["id"]
+        if chat_id in self.chats:
+            return False
+
         from_ = msg.get("from")
         if from_ is None:
             return False
 
-        from_id = from_["id"]
-        chat_id = msg["chat"]["id"]
-        return from_id != chat_id and chat_id not in self.chats
+        if from_["id"] == chat_id:
+            return False
+
+        return text.startswith(self.command)
