@@ -10,6 +10,7 @@ more-itertools = "*"
 
 [dev-packages]
 pytest = "*"
+pytest-trio = "*"
 pytest-cov = "*"
 black = "*"
 pyflakes = "*"
