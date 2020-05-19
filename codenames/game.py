@@ -92,7 +92,7 @@ class Game:
         await self._send(self._chat_id, text, **kwargs)
 
     async def _send(self, chat_id, text, **kwargs):
-        await self.bot.api.send_message(
+        await self._bot.api.send_message(
             json={"chat_id": chat_id, "text": text, **kwargs}
         )
 
@@ -113,4 +113,4 @@ class Game:
 
         from_id = from_["id"]
         chat_id = msg["chat"]["id"]
-        return from_id != chat_id and chat_id == self.chat_id
+        return from_id != chat_id and chat_id == self._chat_id
