@@ -1,4 +1,4 @@
-from app import wordlist, config
+from codenames import wordlist, config
 
 
 def test_load_default():

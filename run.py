@@ -1,4 +1,4 @@
-import app
+import codenames
 
 if __name__ == "__main__":
-    app.main()
+    codenames.main()
