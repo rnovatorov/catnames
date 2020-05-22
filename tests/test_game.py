@@ -5,7 +5,7 @@ import trio
 import triogram
 import pytest
 
-from codenames.game import Game
+from catnames.game import Game
 
 
 @attr.s

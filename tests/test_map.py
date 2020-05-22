@@ -1,6 +1,6 @@
-from codenames import config, wordlist
-from codenames.map import Map
-from codenames.cells import BlueCell, RedCell, NeutralCell
+from catnames import config, wordlist
+from catnames.map import Map
+from catnames.cells import BlueCell, RedCell, NeutralCell
 
 
 def test_map_as_emoji():

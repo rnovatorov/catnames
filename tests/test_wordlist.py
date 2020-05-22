@@ -1,4 +1,4 @@
-from codenames import wordlist, config
+from catnames import wordlist, config
 
 
 def test_load_default():

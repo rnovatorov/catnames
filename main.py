@@ -1,4 +1,4 @@
-import codenames
+import catnames
 
 if __name__ == "__main__":
-    codenames.main()
+    catnames.main()

@@ -27,4 +27,4 @@ check: black-check pyflakes-check
 
 .PHONY: test
 test:
-	pipenv run pytest --verbose --cov codenames --cov-report term-missing
+	pipenv run pytest --verbose --cov catnames --cov-report term-missing
