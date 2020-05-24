@@ -1,8 +1,9 @@
 import attr
 import trio
 
-from . import config, wordlist
+from . import wordlist
 from .map import Map
+from .keyboard import Keyboard
 from .cells import BlueCell, RedCell, NeutralCell, KillerCell
 
 
@@ -16,17 +17,31 @@ class Game:
     spymasters = attr.ib(factory=set)
 
     async def __call__(self):
-        self.create_map()
+        await self.create_map()
         await self.choose_spymasters()
         await self.reveal_map_to_spymasters()
         await self.show_map()
         winner = await self.wait_winner()
         await self._broadcast(winner, reply_markup={"remove_keyboard": True})
 
-    def create_map(self):
-        # TODO: Allow to choose wordlist.
-        words = wordlist.load(config.DEFAULT_WORDLIST_NAME)
+    async def create_map(self):
+        name = await self.choose_wordlist()
+        words = wordlist.load(name)
         self.map_ = Map.random(words=words)
+
+    async def choose_wordlist(self):
+        names = set(wordlist.list())
+
+        async with self._sub_for_messages() as updates:
+            reply_markup = Keyboard([list(names)]).json()
+            await self._broadcast("Выберите словарь.", reply_markup=reply_markup)
+
+            async for update in updates:
+                name = update["message"]["text"]
+                if name in names:
+                    return name
+
+                await self._broadcast("Такого словаря нет.")
 
     async def choose_spymasters(self):
         for i in range(1, 3):
