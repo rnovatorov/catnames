@@ -1,9 +1,3 @@
-# Button colors
-BUTTON_COLOR_NEGATIVE = "negative"
-BUTTON_COLOR_POSITIVE = "positive"
-BUTTON_COLOR_DEFAULT = "default"
-BUTTON_COLOR_PRIMARY = "primary"
-
 # Emojis
 EMOJI_BLUE_HEART = "💙"
 EMOJI_GREEN_HEART = "💚"
