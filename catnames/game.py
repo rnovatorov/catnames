@@ -56,7 +56,7 @@ class Game:
                 nursery.start_soon(self._send, spymaster, text)
 
     async def show_map(self):
-        text = "Выбирайте клетку."
+        text = "Выберите клетку."
         reply_markup = self.map_.as_keyboard().json()
         await self._broadcast(text, reply_markup=reply_markup)
 
