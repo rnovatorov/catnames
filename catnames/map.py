@@ -61,4 +61,5 @@ class Map:
         )
         random.shuffle(cells)
         cells = list(mit.chunked(cells, config.N_CELLS_IN_ROW))
+        assert len(cells) == config.N_CELLS_IN_COL
         return cls(cells)
