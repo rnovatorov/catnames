@@ -6,6 +6,7 @@ import triogram
 import pytest
 
 from catnames.game import Game
+from catnames.config import DEFAULT_WORDLIST_NAME
 
 
 @attr.s
@@ -72,8 +73,26 @@ class TestGame:
 
     async def test_run(self, new_game, autojump_clock):
         self.init(new_game)
+        await self.choose_dict()
         await self.first_spymaster()
         await self.second_spymaster()
+
+    async def choose_dict(self):
+        method, args, send_response = await self.api_calls.receive()
+        assert method == "send_message"
+        assert args["text"] == "Выберите словарь."
+        await send_response({})
+
+        await trio.sleep(1)
+        await self.updates.pub(
+            {
+                "message": {
+                    "text": DEFAULT_WORDLIST_NAME,
+                    "from": {"id": self.player_1},
+                    "chat": {"id": self.chat_id},
+                }
+            }
+        )
 
     async def first_spymaster(self):
         method, args, send_response = await self.api_calls.receive()
