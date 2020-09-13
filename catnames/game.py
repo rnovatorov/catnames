@@ -33,7 +33,7 @@ class Game:
         names = set(wordlist.list())
 
         async with self._sub_for_messages() as updates:
-            reply_markup = Keyboard([list(names)]).json()
+            reply_markup = Keyboard([list(names)], one_time=True).json()
             await self._broadcast("Выберите словарь.", reply_markup=reply_markup)
 
             async for update in updates:
