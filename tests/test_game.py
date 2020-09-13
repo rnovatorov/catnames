@@ -5,8 +5,7 @@ import trio
 import triogram
 import pytest
 
-from catnames.game import Game
-from catnames.config import DEFAULT_WORDLIST_NAME
+import catnames
 
 
 @attr.s
@@ -54,7 +53,7 @@ async def new_game():
         api_calls = await stack.enter_async_context(fanout.sub())
 
         def factory(**kwargs):
-            game = Game(bot=bot, **kwargs)
+            game = catnames.Game(bot=bot, **kwargs)
             nursery.start_soon(game)
             return bot.fanout, api_calls
 
@@ -87,7 +86,7 @@ class TestGame:
         await self.updates.pub(
             {
                 "message": {
-                    "text": DEFAULT_WORDLIST_NAME,
+                    "text": catnames.DEFAULT_WORDLIST_NAME,
                     "from": {"id": self.player_1},
                     "chat": {"id": self.chat_id},
                 }
