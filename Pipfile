@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 attrs = "*"
-triogram = "0.5.*"
+triogram = "~=0.5.0"
 more-itertools = "*"
 
 [dev-packages]
